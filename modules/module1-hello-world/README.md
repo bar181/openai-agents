@@ -7,7 +7,7 @@ This is Phase1a of our multi-phase project to build OpenAI agents using FastAPI 
 ## Project Structure
 
 ```
-phase1a-hello-world/
+module1-hello-world/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py
