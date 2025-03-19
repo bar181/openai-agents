@@ -1,293 +1,216 @@
-```markdown
-# Phase1a-Hello-World Tutorial
 
-Welcome to Phase1a-Hello-World of our OpenAI Agents tutorial series! In this lesson, we will build a simple "Hello World" agent using FastAPI and the OpenAI Agents SDK. This project is structured as a mono repo where each phase is in its own folder. In this phase, everything is contained within the `phase1a-hello-world` folder.
+<!-- File: root/tutorials/module1/tutorial.md -->
 
-This tutorial is designed in a teaching-assistant style to guide you through every step. Later phases will follow a similar pattern as we build more sophisticated agents.
+# Module 1 Tutorial: Hello World Agent
 
----
-
-## 1. Introduction
-
-In this tutorial, you'll learn:
-- How to set up your Python environment and install required packages.
-- The project structure for our agent system.
-- The role of each file in building our "Hello World" agent.
-- How to test your agent using unit tests.
-
-We'll explain the conceptual steps first, then provide detailed code snippets and pseudocode for each file.
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Master's Student at Harvard University, CS50 Teaching Fellow*
 
 ---
 
-## 2. Prerequisites
+## Welcome!
 
-Before starting, ensure that you have:
-- **Python 3.10+** installed.
-- A basic understanding of Python and asynchronous programming.
-- An OpenAI API key, which you will set as an environment variable (instructions below).
+Welcome to Module 1 of our self-paced AI Agents course! I'm Bradley Ross, your instructor for this course. This module introduces you to building your very first AI agent—a simple "Hello World" agent using FastAPI and the OpenAI Agents SDK. 
 
-This tutorial is designed for beginners and uses a friendly TA style to explain every step.
+This module sets the foundation for all future modules. Once you've mastered this initial setup, you'll reuse and expand upon these concepts throughout the course.
 
----
-
-## 3. Installation
-
-### Step 3.1: Create a Virtual Environment
-
-Creating a virtual environment sets up your personal workspace and keeps your project dependencies isolated.
-
-Run this command:
-```bash
-python -m venv env
-```
-Then activate it:
-```bash
-source env/bin/activate  # For Linux/macOS
-# or on Windows:
-env\Scripts\activate
-```
-
-### Step 3.2: Install Dependencies
-
-Install the necessary packages. These include FastAPI, Uvicorn, and the OpenAI Agents SDK, along with testing libraries.
-```bash
-pip install fastapi uvicorn python-dotenv openai pydantic openai-agents pytest pytest-asyncio
-```
-
-### Step 3.3: Create the `.env` File
-
-This file will securely hold your sensitive keys. Create a file named `.env` in the root of your project with the following contents:
-```dotenv
-OPENAI_API_KEY=sk-YourOpenAIKeyHere
-API_KEY=mysecretkey
-```
+Let's get started!
 
 ---
 
-## 4. Project Structure Overview
+## Learning Objectives
 
-For Phase1a-Hello-World, the folder structure is as follows:
+By completing this module, you will:
+
+- Set up your Python development environment.
+- Understand the recommended structure for AI agent projects.
+- Learn the role of each key file in your project.
+- Build a simple but fully functional AI agent.
+- Test your agent's functionality using FastAPI and Pytest.
+
+---
+
+## Prerequisites
+
+Before starting this module, ensure you have:
+
+- **Python 3.10+** installed on your machine.
+- Basic familiarity with Python and asynchronous programming concepts.
+- An OpenAI API key (sign up at [OpenAI](https://platform.openai.com/signup)).
+
+---
+
+## Recommended Approach
+
+For the best learning experience, follow this process:
+
+1. **Create a copy** of the module template (`module1-hello-world`).
+2. Rename the folder as needed for experimentation.
+3. Follow the step-by-step explanations below.
+4. Refer to the actual code files within the folder as you read the explanations.
+
+For advanced learners:  
+Feel free to use AI coding tools (e.g., GitHub Copilot) by pointing them toward these module files to help customize your agents.
+
+---
+
+## Step-by-Step Guide
+
+### Step 1: Setting Up Your Environment
+
+First, you'll create an isolated workspace (a virtual environment) to avoid dependency conflicts. This is crucial for professional and consistent coding practice.
+
+- **Create a virtual environment** named `env`.
+- **Activate it** to begin using the environment.
+- **Install dependencies** listed in `requirements.txt` (e.g., FastAPI, Uvicorn, OpenAI SDK).
+
+> **Tip:** Refer to the `requirements.txt` file to see exactly which packages you'll need.
+
+---
+
+### Step 2: Securely Managing API Keys (`.env` File)
+
+Your API keys are private. You'll store them securely in a `.env` file.
+
+- Create a file named `.env` in the project root.
+- Add your OpenAI API key and your own API key for authentication.
+
+> **Important:** Never commit your `.env` file to a public repository! 
+
+---
+
+### Step 3: Understanding the Project Structure
+
+Your module should look like this:
 
 ```
-phase1a-hello-world/
+module1-hello-world/
 ├── app/
-│   ├── __init__.py
-│   ├── main.py                # FastAPI app initialization
-│   ├── config.py              # Loads environment variables
-│   ├── dependencies.py        # Handles API key authentication
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   └── hello_world_agent.py  # Contains our "Hello World" agent logic
-│   └── routers/
-│       ├── __init__.py
-│       └── hello_world.py     # Exposes the agent via an API endpoint
-├── .env                       # Environment variables file
-├── requirements.txt           # Lists all project dependencies
-├── tests/
-│   └── test_hello_world.py    # Unit tests for our agent
-├── tutorial.md                # This detailed tutorial (you are reading it now)
-└── README.md                  # Project overview and usage instructions
+│   ├── agents/              # Holds your agent code
+│   │   └── hello_world_agent.py
+│   ├── routers/             # API endpoints
+│   │   └── hello_world.py
+│   ├── config.py            # Environment variable management
+│   ├── dependencies.py      # API authentication setup
+│   └── main.py              # Main FastAPI application
+├── .env                     # Secret keys
+├── requirements.txt         # Project dependencies
+├── tests/                   # Tests for your agent
+│   └── test_hello_world.py
+├── tutorial.md              # (You're reading this now!)
+└── README.md                # Quick overview
 ```
 
-**File Roles:**
-- **config.py:** Reads environment variables.
-- **dependencies.py:** Sets up API key authentication to secure endpoints.
-- **hello_world_agent.py:** Implements our "Hello World" agent using the OpenAI Agents SDK.
-- **hello_world.py (router):** Connects our agent logic to a FastAPI endpoint.
-- **main.py:** Initializes the FastAPI application and includes the routers.
-- **tests/test_hello_world.py:** Contains tests to verify our endpoint works as expected.
-- **README.md:** Provides an overview of the project and basic usage instructions.
+Each file has a specific role. We'll explain these in the next section.
 
 ---
 
-## 5. Detailed File Explanations and Code
+### Step 4: Key Files and Their Roles
 
-Below are the complete code snippets (with pseudocode where appropriate) for each file.
+#### 4.1 **Environment Configuration (`config.py`)**
 
-### 5.1. `.env`
+- Loads environment variables from your `.env` file.
+- Ensures that sensitive information (like your API keys) is handled safely.
 
-This file holds your secret keys. **Do not commit this file to public repositories.**
-```dotenv
-OPENAI_API_KEY=sk-YourOpenAIKeyHere
-API_KEY=mysecretkey
+*Pseudocode:*
+```
+Load environment variables:
+    OPENAI_API_KEY
+    API_KEY
 ```
 
-### 5.2. `requirements.txt`
+#### 4.2 **Authentication (`dependencies.py`)**
 
-This file lists all the packages required for the project.
-```plaintext
-fastapi
-uvicorn
-python-dotenv
-openai
-pydantic
-openai-agents
-pytest
-pytest-asyncio
+- Defines how the API key authentication works.
+- Prevents unauthorized access to your agent.
+
+*Pseudocode:*
+```
+Create an API key header ("X-API-KEY"):
+Check received API key:
+    If incorrect or missing, deny access
+    If correct, allow access
 ```
 
-### 5.3. `app/config.py`
+#### 4.3 **Agent Logic (`hello_world_agent.py`)**
 
-This file loads environment variables using the `python-dotenv` package.
-```python
-from dotenv import load_dotenv
-load_dotenv()
+- Implements the simple "Hello World" agent using OpenAI's SDK.
+- Demonstrates how an agent is structured with tools and instructions.
 
-import os
-
-# Load your API keys from environment variables
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-API_KEY = os.getenv("API_KEY", "mysecretkey")
+*Pseudocode:*
+```
+Define a tool "hello_world_tool" that returns "Hello, world!"
+Create an agent with instructions: "You are a friendly agent that greets the user."
+Run the agent asynchronously with provided user input
 ```
 
-### 5.4. `app/dependencies.py`
+#### 4.4 **API Endpoint (`routers/hello_world.py`)**
 
-Sets up API key authentication.
-```python
-from fastapi import HTTPException, Security
-from fastapi.security import APIKeyHeader
-from app.config import API_KEY
+- Exposes your agent through an API endpoint using FastAPI.
+- Receives user input and returns the agent’s response.
 
-# Define the header for API key authentication
-api_key_header = APIKeyHeader(name="X-API-KEY", auto_error=False)
-
-def verify_api_key(api_key: str = Security(api_key_header)):
-    if api_key is None or api_key != API_KEY:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    return True
+*Pseudocode:*
+```
+Create a POST endpoint "/agent/hello":
+    Accept user message
+    Call hello_world_agent with the message
+    Return agent's response
 ```
 
-### 5.5. `app/agents/hello_world_agent.py`
+#### 4.5 **Application Entry (`main.py`)**
 
-Contains the logic for the "Hello World" agent. We use the `@function_tool` decorator to designate a simple function as a tool.
-```python
-from agents import Agent, Runner, function_tool
+- Initializes your FastAPI application.
+- Includes routers to expose endpoints.
 
-@function_tool
-def hello_world_tool() -> str:
-    # This tool returns a greeting.
-    return "Hello, world!"
-
-# Create the agent by combining instructions and the tool.
-hello_agent = Agent(
-    name="HelloAgent",
-    instructions="You are a friendly agent that greets the user.",
-    tools=[hello_world_tool],
-)
-
-async def run_hello_agent(user_message: str) -> str:
-    """
-    Run the HelloAgent with the provided message and return its response.
-    """
-    try:
-        result = await Runner.run(hello_agent, user_message)
-        return result.final_output if result else "Error: No response from agent."
-    except Exception as e:
-        return f"Error: {str(e)}"
+*Pseudocode:*
+```
+Initialize FastAPI app
+Include router for hello_world agent at path "/agent"
+Add root endpoint for checking if app is running
 ```
 
-### 5.6. `app/routers/hello_world.py`
+#### 4.6 **Testing Your Agent (`tests/test_hello_world.py`)**
 
-Creates a FastAPI router that exposes our agent through an HTTP POST endpoint.
-```python
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
-from app.dependencies import verify_api_key
-from app.agents.hello_world_agent import run_hello_agent
+- Validates the functionality of your agent's endpoint.
+- Ensures that the response includes the user's input.
 
-router = APIRouter()
-
-class HelloRequest(BaseModel):
-    message: str = Field(..., description="The user's message to the agent.")
-
-class HelloResponse(BaseModel):
-    response: str = Field(..., description="The agent's response.")
-
-@router.post("/hello", response_model=HelloResponse, dependencies=[Depends(verify_api_key)])
-async def hello_endpoint(request: HelloRequest):
-    """
-    Endpoint that triggers the Hello World agent.
-    """
-    agent_response = await run_hello_agent(request.message)
-    if agent_response.startswith("Error"):
-        raise HTTPException(status_code=500, detail=agent_response)
-    return {"response": agent_response}
+*Pseudocode:*
 ```
-
-### 5.7. `app/main.py`
-
-Initializes the FastAPI application and includes the hello_world router.
-```python
-from fastapi import FastAPI
-from app.routers import hello_world
-
-app = FastAPI(title="FastAPI Agent System", version="1.0.0")
-
-# Mount the hello_world router at the /agent path.
-app.include_router(hello_world.router, prefix="/agent")
-
-@app.get("/")
-async def root():
-    return {"message": "FastAPI Agent System Running"}
-```
-
-### 5.8. `tests/test_hello_world.py`
-
-Unit test to verify that the endpoint works correctly. Notice that we include the API key retrieved from our configuration.
-```python
-from fastapi.testclient import TestClient
-from app.main import app
-from app.config import API_KEY
-
-client = TestClient(app)
-
-def test_hello_world():
-    # Test the hello endpoint with the API key from the .env file.
-    response = client.post(
-        "/agent/hello",
-        json={"message": "Hi from Bradley"},
-        headers={"X-API-KEY": API_KEY}
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert "Bradley" in data["response"]
+Send POST request to "/agent/hello" with message "Hi from Bradley"
+Check response status is 200 (OK)
+Ensure response contains "Bradley"
 ```
 
 ---
 
-## 6. Running the Application and Tests
+## Step 5: Running Your Application and Tests
 
-### To Start the Server:
-1. Open a terminal and navigate to the `phase1a-hello-world` folder.
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Start the FastAPI server with Uvicorn:
-   ```bash
-   python -m uvicorn app.main:app --reload
-   ```
-4. Open your browser and visit [http://localhost:8000/docs](http://localhost:8000/docs) to interact with the API via Swagger UI.
+**Starting your application:**
+- Activate your virtual environment.
+- Navigate to your project folder.
+- Run the FastAPI server using Uvicorn:
+  ```bash
+  python -m uvicorn app.main:app --reload
+  ```
+- Visit `http://localhost:8000/docs` to test your API.
 
-### To Run the Tests:
-Run the following command in your terminal:
-```bash
-python -m pytest tests/
-```
-
----
-
-## 7. Final Remarks
-
-This tutorial has guided you through setting up a mono repo for Phase1a-Hello-World. We covered:
-- Environment setup and dependency installation.
-- The project structure and role of each file.
-- Detailed code for each component.
-- How to run and test your application.
-
-This foundation will be used in later phases to create more advanced agents following a similar pattern.
-
-Happy coding, and see you in the next phase!
-```
+**Running tests:**
+- Ensure your server isn't running to avoid conflicts.
+- Execute:
+  ```bash
+  python -m pytest tests/
+  ```
+- Confirm all tests pass successfully.
 
 ---
+
+## Final Thoughts & Next Steps
+
+Congratulations! You've successfully built and tested your first AI agent. You've learned the foundations of setting up an AI project, integrating FastAPI, and writing structured, maintainable code.
+
+In Module 2, you'll expand this foundation by creating a more complex Story Telling Agent, exploring advanced agent workflows, and improving your project structure.
+
+Keep exploring, experimenting, and enhancing your agent-building skills.
+
+Happy coding, and see you in the next module!
+
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, CS50 Teaching Fellow*
