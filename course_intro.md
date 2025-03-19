@@ -115,7 +115,7 @@ This course is organized as a monorepo containing clearly defined modules. Each 
 
 ## About the Instructor
 
-**Bradley Ross** is an experienced Agentics Engineer and Technical Lead, pursuing a Master's at Harvard University. Bradley has served as a Teaching Fellow / Course Asssistant for Harvard’s CS50 for ten terms, mentoring thousands of students through the fundamentals and intricacies of software engineering, AI, and web development.
+**Bradley Ross** is an experienced Agentics Engineer and Technical Lead, pursuing a Master's at Harvard University. Bradley has served as a Teaching Fellow / Course Asssistant for Harvard’s CS50 for ten terms, mentoring thousands of students.  He mentors students and developers in software engineering, AI development, and web programming.
 
 ---
 
