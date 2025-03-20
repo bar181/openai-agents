@@ -66,6 +66,72 @@ class DynamicPromptAgent:
         pass
 ```
 
+### Test after this step:
+# File: root/modules/module3-basic-agents/tests/test_basic_agents.py
+# Run in module folder: python -m pytest tests/test_basic_agents.py
+``` python
+from fastapi.testclient import TestClient
+from app.main import app
+from app.config import API_KEY
+
+client = TestClient(app)
+
+headers = {"X-API-KEY": API_KEY}
+
+def test_initialize_lifecycle_agent():
+    response = client.post(
+        "/agents/basic/lifecycle/initialize",
+        headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "initialized" in data["status"].lower()
+
+def test_execute_lifecycle_agent():
+    input_data = {"input": "Sample input for lifecycle agent"}
+    response = client.post(
+        "/agents/basic/lifecycle/execute",
+        json=input_data,
+        headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "result" in data
+    assert "Sample input for lifecycle agent" in data["result"]
+
+def test_terminate_lifecycle_agent():
+    response = client.post(
+        "/agents/basic/lifecycle/terminate",
+        headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "terminated" in data["status"].lower()
+
+def test_update_dynamic_system_prompt():
+    prompt_update = {"new_prompt": "You are now an advanced assistant."}
+    response = client.post(
+        "/agents/basic/dynamic-prompt/update",
+        json=prompt_update,
+        headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["prompt"] == prompt_update["new_prompt"]
+
+def test_execute_dynamic_prompt_agent():
+    input_data = {"input": "Test dynamic prompt agent execution."}
+    response = client.post(
+        "/agents/basic/dynamic-prompt/execute",
+        json=input_data,
+        headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "response" in data
+    assert "Test dynamic prompt agent execution" in data["response"]
+```
+
 
 ### Step 3: Integrate with FastAPI
 
