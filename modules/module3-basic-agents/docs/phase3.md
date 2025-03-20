@@ -1,8 +1,6 @@
-<!-- File: root/modules/module3-basic-agents/docs/phase3.md -->
-
 # Phase 3: Enhanced Generic Lifecycle Agent Implementation
 
-Phase 3 introduces a robust, **Enhanced Generic Lifecycle Agent**, extending the previously implemented Generic Lifecycle Agent with a structured toolset, dynamic execution capabilities, detailed logging, and production-ready functionality.
+Phase 3 introduces a robust, **Enhanced Generic Lifecycle Agent**, implementing a sophisticated agent with structured toolset, dynamic execution capabilities, detailed logging, and production-ready functionality. This agent is now part of the advanced agents module due to its enhanced capabilities.
 
 ---
 
@@ -16,11 +14,12 @@ Implement an advanced, highly configurable Generic Lifecycle Agent with extensiv
 
 The enhanced implementation involves:
 
-1. **Setup Enhanced Generic Lifecycle Agent class**
+1. **Setup Generic Lifecycle Agent class**
 2. **Introduce Structured Toolset**
-3. **Update FastAPI Router**
-4. **Integrate with FastAPI Application (`main.py`)**
-5. **Develop Comprehensive Tests**
+3. **Create Advanced Router**
+4. **Update FastAPI Router**
+5. **Integrate with FastAPI Application (`main.py`)**
+6. **Develop Comprehensive Tests**
 
 ---
 
@@ -30,10 +29,14 @@ The enhanced implementation involves:
 module3-basic-agents/
 ├── app/
 │   ├── agents/
-│   │   └── basic/
-│   │       └── enhanced_generic_agent.py  # Enhanced generic lifecycle agent
+│   │   ├── basic/
+│   │   │   ├── lifecycle_agent.py
+│   │   │   └── dynamic_prompt_agent.py
+│   │   └── advanced/
+│   │       └── generic_lifecycle_agent.py  # Enhanced generic lifecycle agent
 │   ├── routers/
-│   │   └── basic_router.py                # Updated router
+│   │   ├── basic_router.py      # Basic agents router
+│   │   └── advanced_router.py   # Advanced agents router
 │   ├── tools/
 │   │   ├── __init__.py
 │   │   ├── math_tools.py
@@ -41,56 +44,62 @@ module3-basic-agents/
 │   │   ├── string_tools.py
 │   │   ├── datetime_tools.py
 │   │   └── echo_tools.py
-│   └── main.py                            # FastAPI entry point
+│   └── main.py                  # FastAPI entry point
 ├── docs/
-│   └── phase3.md                          # This implementation guide
+│   └── phase3.md               # This implementation guide
 ├── tests/
-│   └── test_enhanced_generic_agent.py     # Enhanced agent tests
+│   └── test_advanced_agents.py # Advanced agents tests
 ```
 
 ---
 
 ## 🛠 Step-by-Step Implementation
 
-### ✅ Step 1: Setup Enhanced Generic Lifecycle Agent
+### ✅ Step 1: Setup Generic Lifecycle Agent
 
-**File:** `app/agents/basic/enhanced_generic_agent.py`
+**File:** `app/agents/advanced/generic_lifecycle_agent.py`
 
 ```python
 from typing import Any, Optional, Callable
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from agents import Agent, Runner, RunHooks, Tool
 
-class EnhancedLifecycleHooks(RunHooks):
+class GenericLifecycleHooks(RunHooks):
+    def __init__(self, logger: Optional[Callable[[str], None]] = print):
+        self.logger = logger
+
     async def on_agent_start(self, context, agent: Agent):
-        print(f"Agent '{agent.name}' started.")
+        self.logger(f"[START] Agent '{agent.name}' started.")
 
     async def on_agent_end(self, context, agent: Agent, output: Any):
-        print(f"Agent '{agent.name}' completed with output: {output}")
+        self.logger(f"[END] Agent '{agent.name}' ended with output: {output}")
 
     async def on_tool_start(self, context, agent: Agent, tool: Tool):
-        print(f"Tool '{tool.name}' started.")
+        self.logger(f"[TOOL START] '{tool.name}' started.")
 
     async def on_tool_end(self, context, agent: Agent, tool: Tool, result: Any):
-        print(f"Tool '{tool.name}' finished with result: {result}")
+        self.logger(f"[TOOL END] '{tool.name}' ended with result: {result}")
 
-class EnhancedAgentConfig(BaseModel):
+class GenericAgentConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     name: str
     instructions: str
-    tools: Optional[list[Tool]] = []
+    tools: Optional[list[Tool]] = None
+    output_type: Optional[Any] = None
 
-class EnhancedGenericAgent:
-    def __init__(self, config: EnhancedAgentConfig, hooks: Optional[RunHooks] = None):
+class GenericLifecycleAgent:
+    def __init__(self, config: GenericAgentConfig, hooks: Optional[RunHooks] = None):
         self.agent = Agent(
             name=config.name,
             instructions=config.instructions,
-            tools=config.tools
+            tools=config.tools or [],
+            output_type=config.output_type
         )
-        self.hooks = hooks or EnhancedLifecycleHooks()
+        self.hooks = hooks or GenericLifecycleHooks()
 
-    async def execute(self, input_data: Any):
+    async def run(self, input_data: Any):
         return await Runner.run(
-            agent=self.agent,
+            self.agent,
             hooks=self.hooks,
             input=input_data
         )
@@ -100,83 +109,108 @@ class EnhancedGenericAgent:
 
 ### ✅ Step 2: Introduce Structured Toolset
 
-Create reusable tools under the new `tools` directory:
+Create reusable tools under the `tools` directory:
 
-- **math_tools.py:** add, multiply, random_number
-- **data_tools.py:** fetch_json, save_to_db
-- **string_tools.py:** concat_strings, count_words
-- **datetime_tools.py:** current_time, days_between
+- **math_tools.py:** add, multiply
+- **data_tools.py:** fetch_mock_data
+- **string_tools.py:** to_uppercase
+- **datetime_tools.py:** current_time
 - **echo_tools.py:** echo
 
-Example (`echo_tools.py`):
+Example (`data_tools.py`):
 
 ```python
 from agents import function_tool
 
 @function_tool
-def echo(message: str) -> str:
-    return f"Echo: {message}"
+def fetch_mock_data(source: str) -> dict:
+    """Retrieve MOCK data from an INTERNAL simulated database."""
+    return {"source": source, "data": "sample data"}
 ```
 
 ---
 
-### ✅ Step 3: Update FastAPI Router
+### ✅ Step 3: Create Advanced Router
 
-**File:** `app/routers/basic_router.py`
+**File:** `app/routers/advanced_router.py`
 
 ```python
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.dependencies import verify_api_key
-from app.agents.basic.enhanced_generic_agent import (
-    EnhancedGenericAgent, EnhancedAgentConfig
+
+from app.agents.advanced.generic_lifecycle_agent import (
+    GenericLifecycleAgent,
+    GenericAgentConfig,
 )
+
 from app.tools.echo_tools import echo
+from app.tools.math_tools import add, multiply
+from app.tools.string_tools import to_uppercase
+from app.tools.datetime_tools import current_time
+from app.tools.data_tools import fetch_mock_data
 
-router = APIRouter(tags=["Enhanced Generic Agent"])
+router = APIRouter(tags=["Advanced Agents"])
 
-class EnhancedAgentRequest(BaseModel):
-    message: str
+class GenericExecuteRequest(BaseModel):
+    message: str = Field(..., description="Message input for generic lifecycle agent")
 
-# Initialize the enhanced agent
-enhanced_agent_config = EnhancedAgentConfig(
-    name="EnhancedAgent",
-    instructions="Echo user's message dynamically.",
-    tools=[echo]
+class GenericExecuteResponse(BaseModel):
+    response: str = Field(..., description="Response from generic lifecycle agent")
+
+# Instantiate the Generic Lifecycle Agent with enhanced toolset
+config = GenericAgentConfig(
+    name="GenericLifecycleAgent",
+    instructions=(
+        "You have access to the following INTERNAL tools only:\n"
+        "- echo(message: str): echoes a message.\n"
+        "- add(a: float, b: float): returns the sum of two numbers.\n"
+        "- multiply(a: float, b: float): returns the product of two numbers.\n"
+        "- to_uppercase(text: str): converts text to uppercase.\n"
+        "- current_time(): returns current UTC time.\n"
+        "- fetch_mock_data(source: str): retrieves MOCK data from a simulated internal database.\n\n"
+        "When a user requests to fetch or retrieve data from any source, use fetch_mock_data to get the data "
+        "and return the data value from the result."
+    ),
+    tools=[echo, add, multiply, to_uppercase, current_time, fetch_mock_data]
 )
+generic_agent = GenericLifecycleAgent(config)
 
-agent = EnhancedGenericAgent(enhanced_agent_config)
-
-@router.post("/enhanced/execute", dependencies=[Depends(verify_api_key)])
-async def execute_enhanced_agent(request: EnhancedAgentRequest):
-    result = await agent.execute(request.message)
-    return {"response": result.final_output}
+@router.post(
+    "/generic-lifecycle/execute",
+    response_model=GenericExecuteResponse,
+    dependencies=[Depends(verify_api_key)]
+)
+async def execute_generic_agent(request: GenericExecuteRequest):
+    result = await generic_agent.run(request.message)
+    return GenericExecuteResponse(response=str(result.final_output))
 ```
 
 ---
 
-### ✅ Step 4: Integrate with FastAPI (`main.py`)
-
-Update main application:
+### ✅ Step 4: Update FastAPI Application (`main.py`)
 
 ```python
 from fastapi import FastAPI
-from app.routers import basic_router
+from app.routers import hello_world, story_router, basic_router, advanced_router
 
-app = FastAPI(title="Enhanced Generic Lifecycle Agent", version="1.0.0")
+app = FastAPI(title="Module3 - Basic Agents", version="1.0.0")
 
+app.include_router(hello_world.router, prefix="/agent")
+app.include_router(story_router.router, prefix="/agents/story")
 app.include_router(basic_router.router, prefix="/agents/basic")
+app.include_router(advanced_router.router, prefix="/agents/advanced")
 
 @app.get("/")
 async def root():
-    return {"message": "Enhanced Generic Agent System Running"}
+    return {"message": "FastAPI Agent System Running"}
 ```
 
 ---
 
 ### ✅ Step 5: Develop Comprehensive Tests
 
-**File:** `tests/test_enhanced_generic_agent.py`
+**File:** `tests/test_advanced_agents.py`
 
 ```python
 from fastapi.testclient import TestClient
@@ -186,36 +220,46 @@ from app.config import API_KEY
 client = TestClient(app)
 headers = {"X-API-KEY": API_KEY}
 
-def test_enhanced_agent_execution():
+def test_generic_lifecycle_agent_echo_tool():
     response = client.post(
-        "/agents/basic/enhanced/execute",
-        json={"message": "Testing Enhanced Agent"},
+        "/agents/advanced/generic-lifecycle/execute",
+        json={"message": "Echo 'Hello World'"},
         headers=headers
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["response"] == "Echo: Testing Enhanced Agent"
+    assert data["response"] == "Echo: Hello World"
+
+def test_generic_lifecycle_agent_data_fetch_tool():
+    response = client.post(
+        "/agents/advanced/generic-lifecycle/execute",
+        json={"message": "Fetch MOCK data from 'source1'"},
+        headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "sample data" in data["response"]
 ```
 
 Run tests:
 
 ```bash
-python -m pytest tests/test_enhanced_generic_agent.py
+python -m pytest tests/test_advanced_agents.py -v
 ```
 
 ---
 
 ## 🎯 Summary and Completion Checklist
 
-- [✔] **Enhanced Generic Lifecycle Agent implemented.**
-- [✔] **Structured, reusable toolset created.**
-- [✔] **FastAPI Router endpoints configured.**
-- [✔] **Integrated endpoints into FastAPI main application.**
-- [✔] **Comprehensive unit and integration tests written and verified.**
+- [✔] **Generic Lifecycle Agent implemented in advanced module**
+- [✔] **Structured, reusable toolset created**
+- [✔] **Advanced Router configured with enhanced functionality**
+- [✔] **Basic Router simplified to focus on basic agents**
+- [✔] **FastAPI application updated with new router structure**
+- [✔] **Comprehensive unit and integration tests written and verified**
 
-The enhanced generic lifecycle agent provides a robust, scalable foundation, simplifying future development and integration tasks for diverse business logic and automation scenarios.
+The generic lifecycle agent, now part of the advanced agents module, provides a robust, scalable foundation with enhanced capabilities for complex tasks. The separation into basic and advanced modules provides a clear organization of agent capabilities based on their complexity and features.
 
 ---
 
 **End of Phase 3 Document**
-

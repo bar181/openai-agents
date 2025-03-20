@@ -1,191 +1,205 @@
-<!-- File: root/tutorials/module3/tutorial.md -->
+# Module 3 Tutorial: Basic and Advanced Agent Development
 
-# Module 2 Tutorial: Story Telling Agent
-
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Master's Student at Harvard University, CS50 Teaching Fellow for 10 Terms*
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Master's Student at Harvard University, CS50 Teaching Fellow*
 
 ---
 
-## Welcome to Module 2!
+## Welcome to Module 3!
 
-Welcome back! Bradley Ross here. In Module 2, we're expanding on the basics from Module 1 (Hello World Agent) by diving deeper into more advanced concepts through building a Story Telling Agent. By the end of this module, you'll understand how to enhance a simple deterministic agent into creative narrative generators, using structured project management and thoughtful design.
-
-**Note:** All files from Module 1 are retained in this module. A good practice to follow is copying the entire Module 1 directory and renaming it as your starting point. The detailed `/docs` files (`phase1.md`, `phase2.md`, and `implementation_process.md`) will guide your modifications.
+Hello again! In this module, we're taking a significant step forward in agent development by exploring both basic and advanced agent concepts. You'll learn how to manage agent lifecycles, implement dynamic system prompts, and create sophisticated agents with integrated tools. This module is structured to progressively build your understanding from fundamental concepts to advanced implementations.
 
 ---
 
 ## Learning Goals
 
-In this module, you will:
+By completing this module, you will:
 
-- Create multiple AI agents: Baseline, Custom, and Advanced story agents.
-- Reorganize and structure project folders effectively for scalability.
-- Integrate creative narrative enhancements into your agent.
-- Clearly define API endpoints using FastAPI.
-- Write comprehensive tests to ensure agent reliability.
-
----
-
-## Recommended Workflow
-
-1. **Start by copying Module 1** and renaming it to a new working folder.
-2. **Follow the `/docs` files closely**—these documents serve as your roadmap.
-3. **Review the example agent files** (`baseline_story_agent.py`, `custom_story_agent.py`, and `advanced_story_agent.py`) carefully.
-4. **Consult this tutorial frequently**, referring to the code files as you proceed.
-
-*For advanced users:* Point your AI coding tools to these existing files to expedite customizing or extending your agents.
+- Master agent lifecycle management (initialization, execution, termination)
+- Implement dynamic system prompts for flexible agent behavior
+- Create advanced agents with integrated tool suites
+- Organize agents by complexity level (basic vs. advanced)
+- Design clear API endpoints using FastAPI
+- Write comprehensive tests for agent validation
 
 ---
 
-## Detailed Module Structure
+## Module Structure Overview
 
-This module introduces three agents with increasing complexity:
+We've organized this module into two main categories:
 
-### 1. **Baseline Story Agent** (`baseline_story_agent.py`)
+### 1. Basic Agents
+- **Lifecycle Agent:** Learn fundamental agent state management
+- **Dynamic Prompt Agent:** Explore runtime prompt modifications
 
-- **Purpose:** Generate a deterministic, simple story outline.
-- **Implementation:** Based on the OpenAI deterministic pattern.
-- **Pseudocode:**
-  ```
-  function generate_outline(topic):
-      return simple structured outline
+### 2. Advanced Agents
+- **Generic Lifecycle Agent:** Implement sophisticated agents with tool integration
 
-  create baseline agent using generate_outline tool
-
-  async run_baseline_agent(topic):
-      return agent-generated outline
-  ```
-
-### 2. **Custom Story Agent** (`custom_story_agent.py`)
-
-- **Purpose:** Enhance narrative creativity with detailed, vivid outlines.
-- **Implementation:** Extends baseline logic with more creative narrative instructions.
-- **Pseudocode:**
-  ```
-  function generate_custom_outline(topic):
-      return detailed, vivid story outline
-
-  create custom agent with generate_custom_outline tool
-
-  async run_custom_agent(topic):
-      return enhanced narrative outline
-  ```
-
-### 3. **Advanced Story Agent** (`advanced_story_agent.py`)
-
-- **Purpose:** Generate structured, multi-step stories using Pydantic models and a sophisticated workflow.
-- **Implementation:**
-  - Step 1: Structured outline generation.
-  - Step 2: Expand into full story.
-- **Pseudocode:**
-  ```
-  define StoryOutline model:
-      introduction, body, conclusion
-
-  function generate_advanced_outline(topic):
-      return structured StoryOutline
-
-  function generate_story_body(outline):
-      return complete story based on outline
-
-  create advanced agent with both tools
-
-  async run_advanced_agent(topic):
-      generate outline
-      generate full story from outline
-      return complete narrative
-  ```
+This structure helps you progressively build your understanding while keeping code organized and maintainable.
 
 ---
 
-## Project Structure Overview
+## Step-by-Step Learning Path
 
-```
-module2-story-agent/
-├── app/
-│   ├── agents/
-│   │   └── story/
-│   │       ├── baseline_story_agent.py
-│   │       ├── custom_story_agent.py
-│   │       └── advanced_story_agent.py
-│   ├── routers/
-│   │   └── story_router.py
-│   ├── config.py
-│   ├── dependencies.py
-│   └── main.py
-├── docs/
-│   ├── phase1.md
-│   ├── phase2.md
-│   └── implementation_process.md
-├── tests/
-│   ├── test_hello_world.py
-│   └── test_mod2_story.py
-└── tutorials/
-    └── module2/
-        └── tutorial.md (this file)
+### Phase 1: Basic Agent Development
+
+#### Lifecycle Management
+```python
+# Example: Basic Lifecycle Agent
+async def initialize_agent():
+    """Initialize agent state"""
+    return {"status": "initialized"}
+
+async def execute_agent(input_data):
+    """Process user input"""
+    return {"result": process_input(input_data)}
+
+async def terminate_agent():
+    """Clean up resources"""
+    return {"status": "terminated"}
 ```
 
----
+**Key Learning Points:**
+- Understanding agent state management
+- Handling initialization and cleanup
+- Processing user inputs systematically
 
-## Integrating Your Agents into FastAPI
+#### Dynamic System Prompts
+```python
+# Example: Dynamic Prompt Agent
+async def update_system_prompt(new_prompt: str):
+    """Update agent's behavior instructions"""
+    return {"updated_prompt": new_prompt}
 
-### File: `routers/story_router.py`
-
-Define clear API endpoints for each agent:
-
-- **Baseline Endpoint:** `/agents/story/baseline`
-- **Custom Endpoint:** `/agents/story/custom`
-- **Advanced Endpoint:** `/agents/story/advanced`
-
-*Pseudocode:*
-```
-define endpoint /baseline:
-    return baseline agent output
-
-define endpoint /custom:
-    return custom agent output
-
-define endpoint /advanced:
-    return advanced agent output
+async def execute_with_prompt(input_data: str):
+    """Execute with current prompt context"""
+    return {"response": generate_response(input_data)}
 ```
 
-Refer to `story_router.py` for complete FastAPI integration details.
+**Key Learning Points:**
+- Modifying agent behavior at runtime
+- Managing prompt context
+- Adapting agent responses dynamically
+
+### Phase 2: Advanced Agent Development
+
+#### Generic Lifecycle Agent with Tools
+```python
+# Example: Advanced Agent Configuration
+config = GenericAgentConfig(
+    name="AdvancedAgent",
+    instructions="Process inputs using available tools",
+    tools=[
+        echo,           # Basic echo functionality
+        add,           # Mathematical operations
+        to_uppercase,  # String manipulation
+        current_time,  # Time utilities
+        fetch_mock_data # Data operations
+    ]
+)
+```
+
+**Key Learning Points:**
+- Integrating multiple tools into agents
+- Configuring agent behavior
+- Implementing lifecycle hooks for monitoring
+- Managing complex agent states
 
 ---
 
-## Testing Your Agents
+## Working with the Code
 
-Testing is critical. All three endpoints are thoroughly tested in `tests/test_mod2_story.py`.
+### Basic Agents Directory (`app/agents/basic/`)
+```plaintext
+basic/
+├── lifecycle_agent.py     # Basic lifecycle management
+└── dynamic_prompt_agent.py # Dynamic prompt handling
+```
 
-- **Test coverage includes:**
-  - Endpoint status code checks (expecting HTTP 200)
-  - Verifying returned outlines/stories include provided topics (case-insensitive)
+### Advanced Agents Directory (`app/agents/advanced/`)
+```plaintext
+advanced/
+└── generic_lifecycle_agent.py # Enhanced agent with tools
+```
 
-To run tests:
+### Tools Directory (`app/tools/`)
+```plaintext
+tools/
+├── math_tools.py      # Mathematical operations
+├── string_tools.py    # String manipulation
+├── datetime_tools.py  # Time utilities
+├── data_tools.py      # Data handling
+└── echo_tools.py      # Echo functionality
+```
+
+---
+
+## Testing Your Implementation
+
+We've provided comprehensive tests for both basic and advanced agents:
 
 ```bash
-python -m pytest tests/
+# Test basic agents
+python -m pytest tests/test_basic_agents.py
+
+# Test advanced agents
+python -m pytest tests/test_advanced_agents.py
 ```
 
-Ensure all tests pass successfully.
+Key test scenarios include:
+- Lifecycle management validation
+- Dynamic prompt updates
+- Tool integration verification
+- Error handling checks
 
 ---
 
-## Tips for Effective Learning
+## Tips for Success
 
-- **Incremental Changes:** Make small, frequent changes and test each step thoroughly.
-- **Frequent Reviews:** Regularly revisit `/docs` files to confirm your implementation aligns with intended structure.
-- **Utilize AI Assistance:** Leverage AI code-writing tools by providing these module files as references.
+1. **Progressive Learning:**
+   - Start with basic agents to understand core concepts
+   - Move to advanced agents once comfortable with basics
+   - Take time to understand each tool's purpose
+
+2. **Testing Strategy:**
+   - Write tests before implementing features
+   - Verify each agent function independently
+   - Test tool integrations thoroughly
+
+3. **Common Pitfalls to Avoid:**
+   - Don't skip basic concepts to jump to advanced features
+   - Always handle agent cleanup properly
+   - Verify tool availability before usage
 
 ---
 
-## Wrapping Up
+## Practical Exercises
 
-Great job completing Module 2! You've significantly expanded your understanding of agent complexity, code structure, API integration, and testing.
+1. **Basic Agent Exercise:**
+   - Modify the lifecycle agent to include custom state tracking
+   - Add new prompt templates to the dynamic prompt agent
 
-Module 3 will further deepen your skills with more complex agent workflows and functionalities, preparing you for real-world agent development.
+2. **Advanced Agent Exercise:**
+   - Add a new tool to the generic lifecycle agent
+   - Implement custom lifecycle hooks for logging
 
-Thank you, and keep building amazing agents!
+3. **Integration Exercise:**
+   - Create a new endpoint combining multiple agent capabilities
+   - Implement error handling and validation
 
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, CS50 Teaching Fellow*
+---
 
+## Next Steps
+
+After completing this module, you'll have a solid foundation in both basic and advanced agent development. The next module will build upon these concepts to create even more sophisticated agent systems.
+
+Remember:
+- Review the documentation in `/docs`
+- Test your implementations thoroughly
+- Experiment with different tool combinations
+- Practice error handling and validation
+
+---
+
+*Keep building and exploring! The skills you're learning here are fundamental to creating sophisticated AI agent systems.*
+
+*- Bradley Ross*

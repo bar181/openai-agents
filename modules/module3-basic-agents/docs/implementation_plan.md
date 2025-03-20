@@ -1,99 +1,151 @@
-<!-- File: root/modules/module3-basic-agents/docs/implementation_plan.md -->
+# Module 3: Basic and Advanced OpenAI Agents Implementation Plan
 
-To effectively implement Module 3: Basic OpenAI Agents, we'll build upon the foundation established in Module 2. This module introduces various basic agent functionalities, including streaming responses and agent lifecycle management.
+This module builds upon the foundation established in Module 2, introducing both basic and advanced agent functionalities, including lifecycle management, dynamic prompts, and enhanced tool integration.
 
 **Module 3 Directory Structure:**
-
 
 ```plaintext
 module3-basic-agents/
 ├── app/
 │   ├── agents/
-│   │   └── basic/
-│   │       ├── agent_lifecycle_example.py   # Demonstrates agent lifecycle management
-│   │       ├── dynamic_system_prompt.py     # Shows dynamic system prompt usage
-│   │       ├── stream_items.py              # Illustrates streaming items
-│   │       ├── stream_text.py               # Illustrates streaming text
-│   │       └── tools.py                     # Contains tool definitions
+│   │   ├── basic/
+│   │   │   ├── lifecycle_agent.py        # Basic lifecycle management
+│   │   │   └── dynamic_prompt_agent.py   # Dynamic system prompt usage
+│   │   └── advanced/
+│   │       └── generic_lifecycle_agent.py # Enhanced generic lifecycle agent
 │   ├── routers/
-│   │   └── basic_router.py                  # API endpoints for basic agents
-│   ├── config.py                            # Environment variable and configuration management
-│   ├── dependencies.py                      # Reusable dependencies (e.g., API key validation)
-│   └── main.py                              # FastAPI application entry point
+│   │   ├── basic_router.py               # API endpoints for basic agents
+│   │   └── advanced_router.py            # API endpoints for advanced agents
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── math_tools.py                 # Math operation tools
+│   │   ├── data_tools.py                 # Data handling tools
+│   │   ├── string_tools.py               # String manipulation tools
+│   │   ├── datetime_tools.py             # Time-related tools
+│   │   └── echo_tools.py                 # Echo functionality
+│   ├── config.py                         # Environment and configuration
+│   ├── dependencies.py                   # Reusable dependencies
+│   └── main.py                           # FastAPI application entry
 ├── docs/
-│   ├── phase1.md                            # Phase 1 Implementation Document
-│   ├── phase2.md                            # Phase 2 Implementation Document
-│   └── implementation_process.md            # Checklist of activities completed for Module 3
+│   ├── phase1.md                         # Basic agents implementation
+│   ├── phase2.md                         # Dynamic prompt implementation
+│   ├── phase3.md                         # Advanced agents implementation
+│   ├── implementation_plan.md            # This document
+│   └── implementation_process.md         # Implementation checklist
 ├── tests/
-│   ├── test_agent_lifecycle.py              # Tests for agent lifecycle example
-│   ├── test_dynamic_system_prompt.py        # Tests for dynamic system prompt
-│   ├── test_stream_items.py                 # Tests for streaming items
-│   └── test_stream_text.py                  # Tests for streaming text
-└── README.md                                # Module 3 overview and instructions
+│   ├── test_basic_agents.py             # Tests for basic agents
+│   └── test_advanced_agents.py          # Tests for advanced agents
+└── README.md                            # Module overview
 ```
-
 
 **Implementation Plan:**
 
-1. **Set Up Module 3 Directory:**
-   - Create the `module3-basic-agents` directory following the structure outlined above.
+1. **Set Up Module Structure:**
+   - Create the module directory structure with separate basic and advanced agent directories
+   - Set up tools directory for shared functionality
 
 2. **Develop Basic Agents:**
-   - **Agent Lifecycle Example (`agent_lifecycle_example.py`):**
-     - Demonstrates the management of an agent's lifecycle, including initialization, execution, and termination.
-     - **Pseudocode:**
-       ```python
-       Initialize agent with specific parameters
-       Start agent execution
-       Monitor agent status
-       Handle agent termination
-       ```
-   - **Dynamic System Prompt (`dynamic_system_prompt.py`):**
-     - Illustrates how to dynamically adjust the system prompt based on context or user input.
-     - **Pseudocode:**
-       ```python
-       Define function to generate dynamic prompt
-       Update agent's system prompt during runtime
-       Process user input with updated prompt
-       ```
-   - **Stream Items (`stream_items.py`):**
-     - Shows how to stream a sequence of items (e.g., jokes, facts) to the user in real-time.
-     - **Pseudocode:**
-       ```python
-       Define function to generate items
-       Stream items to user with delays
-       ```
-   - **Stream Text (`stream_text.py`):**
-     - Demonstrates streaming text responses to the user as they are generated.
-     - **Pseudocode:**
-       ```python
-       Generate text response incrementally
-       Stream text to user in real-time
-       ```
-   - **Tools (`tools.py`):**
-     - Contains definitions of tools that agents can utilize, such as functions for fetching weather data or performing calculations.
-     - **Pseudocode:**
-       ```python
-       Define tool functions
-       Register tools with agents
-       ```
+   - **Lifecycle Agent (`lifecycle_agent.py`):**
+     ```python
+     # Basic lifecycle management
+     initialize_agent()    # Set up agent state
+     execute_agent()       # Process user input
+     terminate_agent()     # Clean up resources
+     ```
+   - **Dynamic Prompt Agent (`dynamic_prompt_agent.py`):**
+     ```python
+     # Dynamic prompt handling
+     update_system_prompt()  # Update agent's instructions
+     execute()              # Process with current prompt
+     ```
 
-3. **Integrate Agents with FastAPI:**
-   - Create `basic_router.py` to define API endpoints for each agent, allowing users to interact with them via HTTP requests.
-   - Update `main.py` to include the new router.
+3. **Develop Advanced Agents:**
+   - **Generic Lifecycle Agent (`generic_lifecycle_agent.py`):**
+     ```python
+     class GenericLifecycleAgent:
+         # Enhanced lifecycle with tools
+         __init__()      # Configure agent with tools
+         run()           # Process input with tools
+     
+     class GenericLifecycleHooks:
+         # Lifecycle event monitoring
+         on_agent_start()
+         on_agent_end()
+         on_tool_start()
+         on_tool_end()
+     ```
 
-4. **Manage Configuration and Dependencies:**
-   - Ensure `config.py` and `dependencies.py` are updated to handle any new environment variables or dependencies introduced in this module.
+4. **Implement Tool Suite:**
+   - Create specialized tool modules:
+     ```python
+     # Math operations
+     add()
+     multiply()
+     
+     # String manipulation
+     to_uppercase()
+     
+     # Data operations
+     fetch_mock_data()
+     
+     # Time utilities
+     current_time()
+     
+     # Basic utilities
+     echo()
+     ```
 
-5. **Develop Documentation:**
-   - Write `phase1.md` and `phase2.md` to detail the implementation steps and any enhancements made during the development of Module 3.
-   - Maintain `implementation_process.md` as a checklist to track completed activities.
+5. **Develop API Routers:**
+   - **Basic Router (`basic_router.py`):**
+     - Lifecycle management endpoints
+     - Dynamic prompt endpoints
+   - **Advanced Router (`advanced_router.py`):**
+     - Generic lifecycle agent endpoints with tool integration
 
-6. **Implement Testing:**
-   - Create test files for each agent to ensure they function as expected.
-   - Utilize testing frameworks like `pytest` to automate testing processes.
+6. **FastAPI Integration:**
+   - Update `main.py` to include both basic and advanced routers
+   - Configure proper endpoint prefixes:
+     ```python
+     app.include_router(basic_router, prefix="/agents/basic")
+     app.include_router(advanced_router, prefix="/agents/advanced")
+     ```
 
-7. **Update README:**
-   - Provide an overview of Module 3, including instructions on how to set up and run the agents.
+7. **Configuration Management:**
+   - Update `config.py` for new environment variables
+   - Enhance `dependencies.py` for shared functionality
 
-By following this plan, you'll effectively implement Module 3, introducing basic OpenAI agent functionalities and integrating them into your FastAPI application. 
+8. **Documentation:**
+   - `phase1.md`: Basic agent implementation details
+   - `phase2.md`: Dynamic prompt agent details
+   - `phase3.md`: Advanced agent implementation details
+   - `implementation_process.md`: Track implementation progress
+
+9. **Testing Strategy:**
+   - **Basic Agent Tests:**
+     ```python
+     # test_basic_agents.py
+     test_lifecycle_management()
+     test_dynamic_prompt_updates()
+     ```
+   - **Advanced Agent Tests:**
+     ```python
+     # test_advanced_agents.py
+     test_generic_lifecycle_agent_tools()
+     test_lifecycle_hooks()
+     ```
+
+10. **README Updates:**
+    - Module overview
+    - Setup instructions
+    - Usage examples for both basic and advanced features
+
+This implementation plan provides a structured approach to building both basic and advanced agent functionalities, with clear separation of concerns and comprehensive testing coverage.
+
+The plan emphasizes:
+- Clear separation between basic and advanced capabilities
+- Comprehensive tool integration
+- Robust lifecycle management
+- Thorough testing strategy
+- Detailed documentation at each phase
+
+Follow this plan to create a well-organized, maintainable, and feature-rich agent system.
