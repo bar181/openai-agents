@@ -145,6 +145,12 @@ Each module includes comprehensive documentation:
 
 ---
 
+## Acknowledgements
+[OpenAI Agents Python](https://github.com/openai/openai-agents-python) [MIT License](https://github.com/openai/openai-agents-python/blob/main/LICENSE)
+
+
+---
+
 ## Conclusion
 
 This structured approach offers a robust framework for learning and building increasingly sophisticated AI agents. Whether you're developing practical skills or exploring advanced AI integration, this repository will serve as your comprehensive resource.
