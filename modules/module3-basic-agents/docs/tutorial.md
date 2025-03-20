@@ -1,4 +1,4 @@
-<!-- File: root/tutorials/module2/tutorial.md -->
+<!-- File: root/tutorials/module3/tutorial.md -->
 
 # Module 2 Tutorial: Story Telling Agent
 

@@ -1,9 +1,12 @@
+<!-- File: root/modules/module3-basic-agents/docs/phase1.md -->
 
 # Phase 1: Agent Lifecycle and Dynamic System Prompt
 
 ## Objective
 
-In this phase, we aim to implement and demonstrate the agent lifecycle management and dynamic system prompt functionalities within our FastAPI application. This includes initializing agents, dynamically adjusting system prompts based on user input, integrating these features with FastAPI endpoints, and ensuring their correctness through testing.
+In Phase 1, we implement and demonstrate agent lifecycle management and dynamic system prompt functionalities within our FastAPI application. This phase includes initializing agents, dynamically adjusting system prompts based on user input, integrating these features with FastAPI endpoints, ensuring their correctness through testing, and updating the documentation.
+
+---
 
 ## Steps
 
@@ -11,269 +14,88 @@ In this phase, we aim to implement and demonstrate the agent lifecycle managemen
 
 **Description:**
 
-Develop the agent lifecycle example to showcase the initialization, execution, and termination processes of an agent. This involves creating an agent that can manage its own lifecycle events, providing insights into how agents can be controlled and monitored throughout their operation.
+Develop a comprehensive lifecycle agent showcasing initialization, execution, and termination processes, including error handling and state management.
 
-**Actions:**
+**Completed Actions:**
+- Implemented `LifecycleAgent` class with structured methods for initialization, execution, and termination.
+- Included state tracking to monitor agent status.
+- Implemented convenience functions for direct integration with API endpoints.
 
-- Create a new agent class that includes methods for initialization, execution, and termination.
-- Implement logging within each lifecycle method to track the agent's state transitions.
-- Ensure the agent can handle exceptions gracefully during its lifecycle.
-
-**Pseudocode:**
-
-
-```python
-class LifecycleAgent:
-    def __init__(self):
-        # Initialize agent resources
-        pass
-
-    def execute(self, input_data):
-        # Process input_data and perform agent tasks
-        pass
-
-    def terminate(self):
-        # Clean up resources and terminate agent
-        pass
-```
-
+**File:** `app/agents/basic/lifecycle_agent.py`
 
 ### Step 2: Develop Dynamic System Prompt Functionality
 
 **Description:**
 
-Create functionality that allows the system prompt of an agent to be adjusted dynamically based on context or user input. This enables the agent to modify its behavior in response to changing requirements or environments.
+Create an agent that dynamically adjusts its system prompt to alter its behavior based on context or user input.
 
-**Actions:**
+**Completed Actions:**
+- Implemented `DynamicPromptAgent` class with methods to update and apply dynamic prompts.
+- Provided clear internal state management to ensure consistency in agent responses.
 
-- Implement a method within the agent class to update the system prompt.
-- Ensure the agent can retrieve and apply the updated prompt during execution.
-- Validate that the dynamic prompt influences the agent's responses appropriately.
-
-**Pseudocode:**
-
-
-```python
-class DynamicPromptAgent:
-    def __init__(self, initial_prompt):
-        self.system_prompt = initial_prompt
-
-    def update_prompt(self, new_prompt):
-        self.system_prompt = new_prompt
-
-    def execute(self, input_data):
-        # Use self.system_prompt to guide processing of input_data
-        pass
-```
-
-### Test after this step:
-# File: root/modules/module3-basic-agents/tests/test_basic_agents.py
-# Run in module folder: python -m pytest tests/test_basic_agents.py
-``` python
-from fastapi.testclient import TestClient
-from app.main import app
-from app.config import API_KEY
-
-client = TestClient(app)
-
-headers = {"X-API-KEY": API_KEY}
-
-def test_initialize_lifecycle_agent():
-    response = client.post(
-        "/agents/basic/lifecycle/initialize",
-        headers=headers
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert "initialized" in data["status"].lower()
-
-def test_execute_lifecycle_agent():
-    input_data = {"input": "Sample input for lifecycle agent"}
-    response = client.post(
-        "/agents/basic/lifecycle/execute",
-        json=input_data,
-        headers=headers
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert "result" in data
-    assert "Sample input for lifecycle agent" in data["result"]
-
-def test_terminate_lifecycle_agent():
-    response = client.post(
-        "/agents/basic/lifecycle/terminate",
-        headers=headers
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert "terminated" in data["status"].lower()
-
-def test_update_dynamic_system_prompt():
-    prompt_update = {"new_prompt": "You are now an advanced assistant."}
-    response = client.post(
-        "/agents/basic/dynamic-prompt/update",
-        json=prompt_update,
-        headers=headers
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["prompt"] == prompt_update["new_prompt"]
-
-def test_execute_dynamic_prompt_agent():
-    input_data = {"input": "Test dynamic prompt agent execution."}
-    response = client.post(
-        "/agents/basic/dynamic-prompt/execute",
-        json=input_data,
-        headers=headers
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert "response" in data
-    assert "Test dynamic prompt agent execution" in data["response"]
-```
-
+**File:** `app/agents/basic/dynamic_prompt_agent.py`
 
 ### Step 3: Integrate with FastAPI
 
 **Description:**
 
-Expose the agent lifecycle and dynamic prompt functionalities through FastAPI endpoints, allowing external clients to interact with these features via HTTP requests.
+Expose lifecycle and dynamic prompt functionalities through structured FastAPI endpoints under logical path prefixes.
 
-**Actions:**
+**Completed Actions:**
+- Defined endpoints with descriptive routes for agent lifecycle and dynamic prompt functionality.
+- Created and utilized Pydantic models for input and response validation.
+- Integrated endpoints into the FastAPI app with consistent prefixing.
 
-- Define FastAPI routes for initializing, executing, and terminating the agent.
-- Create endpoints to update the system prompt dynamically.
-- Utilize Pydantic models for request and response schemas to ensure data validation and automatic documentation.
+**Files:**
+- `app/routers/basic_agents.py`
+- `app/main.py`
 
-**Pseudocode:**
+**Endpoint Structure:**
 
+- **Lifecycle Management:**
+  - `POST /agents/basic/lifecycle/initialize`
+  - `POST /agents/basic/lifecycle/execute`
+  - `POST /agents/basic/lifecycle/terminate`
 
-```python
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-app = FastAPI()
-
-class PromptUpdate(BaseModel):
-    new_prompt: str
-
-@app.post("/agent/initialize")
-async def initialize_agent():
-    # Initialize agent
-    pass
-
-@app.post("/agent/execute")
-async def execute_agent(input_data: dict):
-    # Execute agent with input_data
-    pass
-
-@app.post("/agent/terminate")
-async def terminate_agent():
-    # Terminate agent
-    pass
-
-@app.post("/agent/update-prompt")
-async def update_agent_prompt(prompt_update: PromptUpdate):
-    # Update agent's system prompt
-    pass
-```
-
+- **Dynamic Prompt:**
+  - `POST /agents/basic/dynamic-prompt/update`
+  - `POST /agents/basic/dynamic-prompt/execute`
 
 ### Step 4: Testing
 
 **Description:**
 
-Write and execute tests to ensure that both the agent lifecycle management and dynamic system prompt functionalities operate as expected. This includes unit tests for individual components and integration tests for the FastAPI endpoints.
+Ensure agent functionalities are correctly implemented and exposed by creating robust integration tests.
 
-**Actions:**
+**Completed Actions:**
+- Developed integration tests covering all implemented endpoints.
+- Verified successful endpoint responses, data integrity, and proper agent state management.
+- Confirmed all tests pass successfully using pytest.
 
-- Develop unit tests for the agent's lifecycle methods and dynamic prompt updates.
-- Create integration tests for the FastAPI endpoints using FastAPI's TestClient.
-- Verify that the agent behaves correctly under various scenarios, including edge cases.
+**File:** `tests/test_basic_agents.py`
 
-**Pseudocode:**
-
-
-```python
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-def test_initialize_agent():
-    response = client.post("/agent/initialize")
-    assert response.status_code == 200
-
-def test_execute_agent():
-    response = client.post("/agent/execute", json={"input_data": {...}})
-    assert response.status_code == 200
-
-def test_update_agent_prompt():
-    response = client.post("/agent/update-prompt", json={"new_prompt": "New prompt"})
-    assert response.status_code == 200
+**Test Execution:**
+```bash
+python -m pytest tests/test_basic_agents.py
 ```
-
 
 ### Step 5: Documentation Update
 
 **Description:**
 
-Update the project's documentation to reflect the newly implemented features, providing clear instructions on how to use the agent lifecycle management and dynamic system prompt functionalities.
+Document clearly the new functionalities, including API endpoints, use cases, and examples. Ensure documentation is reflected in the auto-generated Swagger UI.
 
-**Actions:**
+**Completed Actions:**
+- Updated detailed Swagger descriptions for all endpoints.
+- Provided practical examples for each API interaction.
+- Ensured documentation consistency and clarity for users accessing via Swagger UI.
 
-- Document the purpose and usage of each FastAPI endpoint.
-- Include examples of how to interact with the agent through the API.
-- Ensure the documentation is accessible via FastAPI's automatic Swagger UI and Redoc interfaces.
-
-**Pseudocode:**
-
-
-```markdown
-# Agent Lifecycle and Dynamic System Prompt API
-
-## Endpoints
-
-### Initialize Agent
-
-**POST** `/agent/initialize`
-
-Initializes the agent.
-
-### Execute Agent
-
-**POST** `/agent/execute`
-
-Executes the agent with provided input data.
-
-### Terminate Agent
-
-**POST** `/agent/terminate`
-
-Terminates the agent.
-
-### Update Agent Prompt
-
-**POST** `/agent/update-prompt`
-
-Updates the agent's system prompt.
-
-## Examples
-
-- **Initialize Agent:**
-
-  ```bash
-  curl -X POST http://localhost:8000/agent/initialize
-  ```
-
-- **Update Agent Prompt:**
-
-  ```bash
-  curl -X POST http://localhost:8000/agent/update-prompt -H "Content-Type: application/json" -d '{"new_prompt": "New prompt"}'
-  ```
-```
-
+**Accessible Documentation:**
+- Swagger UI at: `http://localhost:8000/docs`
+- Detailed descriptions embedded within FastAPI endpoint implementations.
 
 ---
 
-By following this implementation plan, we will successfully integrate agent lifecycle management and dynamic system prompt functionalities into our FastAPI application, ensuring robust operation and clear documentation for users. 
+## Summary
+
+Phase 1 is successfully completed with robust agent lifecycle management, dynamic prompt handling, integrated API endpoints, comprehensive tests, and updated documentation. The groundwork laid in this phase provides a solid foundation for further module development and expansion.
