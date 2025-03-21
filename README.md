@@ -3,7 +3,7 @@
 # OpenAI Agents MonoRepo for FastAPI
 
 Welcome to the OpenAI Agents MonoRepo, a structured, self-paced course designed to teach you how to build, enhance, and deploy intelligent AI agents using the OpenAI Agents SDK and FastAPI. This repository is organized into clearly defined modules, each progressively introducing more complex agent functionalities and patterns.
-
+ 
 ---
 
 ## Current Status
