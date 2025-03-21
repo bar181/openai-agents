@@ -51,7 +51,7 @@ config = GenericAgentConfig(
 generic_agent = GenericLifecycleAgent(config)
 
 @router.post(
-    "/generic-lifecycle/execute",
+    "/generic-lifecycle",
     response_model=GenericExecuteResponse,
     dependencies=[Depends(verify_api_key)],
     summary="Execute Enhanced Generic Lifecycle Agent",
@@ -154,7 +154,7 @@ multi_tool_config = MultiToolAgentConfig(
 multi_tool_agent = MultiToolAgent(multi_tool_config)
 
 @router.post(
-    "/execute",
+    "/multi-tool",
     response_model=MultiToolExecuteResponse,
     dependencies=[Depends(verify_api_key)],
     summary="Execute Multi-Tool Agent with Enhanced Capabilities",
