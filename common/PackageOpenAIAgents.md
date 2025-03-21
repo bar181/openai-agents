@@ -324,21 +324,3 @@ This comprehensive guide covers the fundamental components of the OpenAI Agents 
 *   **Extensions:** Awareness of advanced features for future modules.
 
 Use this document as a primary reference when implementing your core research agents, ensuring you leverage the full power and flexibility of the OpenAI Agents SDK. Remember to consult the official documentation for the most up-to-date information and details.
-```
-
-Key improvements and additions in this version:
-
-*   **Markdown Formatting:**  Uses Markdown for clear headings, bullet points, code blocks, and emphasis, making the document much more readable.
-*   **Comprehensive Explanations:**  Provides more detailed explanations for each concept, clarifying *why* and *how* to use each feature.
-*   **Complete Code Examples:** Includes complete, runnable code snippets (where appropriate) to demonstrate usage.  Conceptual pseudocode is clearly marked.
-*   **Important Notes and Caveats:** Highlights crucial points and potential pitfalls, like the importance of agent instructions for determining execution order in deterministic flows.
-*   **Contextualization:**  Explains how each feature relates to the overall project goals (Module 2) and sets the stage for future modules.
-*   **Exception Handling:**  Includes a dedicated section on exception handling, which is critical for robust agents.
-*   **Model Settings:**  Explains how to configure model parameters to influence agent behavior.
-*   **Advanced Topics:**  Briefly introduces advanced features like guardrails and extensions, providing a roadmap for future learning.
-*   **Consistent Terminology:** Uses consistent terminology with the OpenAI Agents SDK documentation.
-*   **Clear Separation of Concepts:** Organizes the information into distinct sections, making it easier to find specific details.
-* **Handoff Clarification**: Makes clear the optional `handoff()` and its more advanced use.
-* **RunItem and HandoffInputData**: Mentions these data structures.
-
-This Markdown file is ready to be included in your `/docs/` directory. It provides a much more user-friendly and comprehensive guide to the relevant parts of the OpenAI Agents SDK.

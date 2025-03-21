@@ -3,7 +3,7 @@
 # OpenAI Agents MonoRepo for FastAPI
 
 Welcome to the OpenAI Agents MonoRepo, a structured, self-paced course designed to teach you how to build, enhance, and deploy intelligent AI agents using the OpenAI Agents SDK and FastAPI. This repository is organized into clearly defined modules, each progressively introducing more complex agent functionalities and patterns.
-
+ 
 ---
 
 ## Current Status
@@ -21,12 +21,22 @@ Welcome to the OpenAI Agents MonoRepo, a structured, self-paced course designed 
   - `advanced_story_agent.py`: Implements a structured, multi-step story generation workflow.
 - **Skills Learned:** Project reorganization, advanced narrative generation, comprehensive API documentation, structured testing.
 
+**Module 3: Basic and Advanced OpenAI Agents**
+- **Agents:**
+  - Basic Agents:
+    - `lifecycle_agent.py`: Implements agent lifecycle management (initialization, execution, termination).
+    - `dynamic_prompt_agent.py`: Enables runtime updates to system prompts.
+    - `stream_text_agent.py`: Provides real-time streaming text responses.
+    - `stream_items_agent.py`: Delivers structured item sequences incrementally.
+  - Advanced Agents:
+    - `generic_lifecycle_agent.py`: Enhanced agent with comprehensive tool integration.
+    - `multi_tool_agent.py`: Advanced agent with multiple tool capabilities and context management.
+- **Tools:** Extensive tool suite including math operations, string manipulation, data handling, JSON processing, CSV handling, database operations, text analysis, API integration, and data visualization.
+- **Skills Learned:** Agent lifecycle management, dynamic system prompts, real-time streaming, tool integration, context management, comprehensive testing strategies.
+
 ---
 
 ## Upcoming Modules
-
-### Module 3: Basic OpenAI Agents
-- **Agents:** `agent_lifecycle_example.py`, `dynamic_system_prompt.py`, `stream_items.py`, `stream_text.py`
 
 ### Module 4: Custom LLM Providers
 - **Agent:** `custom_llm_agent.py`
@@ -78,6 +88,38 @@ monorepo/
 │       │   └── main.py
 │       ├── docs/
 │       └── tests/
+│   └── module3-basic-agents/
+│       ├── app/
+│       │   ├── agents/
+│       │   │   ├── basic/
+│       │   │   │   ├── lifecycle_agent.py
+│       │   │   │   ├── dynamic_prompt_agent.py
+│       │   │   │   ├── stream_text_agent.py
+│       │   │   │   └── stream_items_agent.py
+│       │   │   └── advanced/
+│       │   │       ├── generic_lifecycle_agent.py
+│       │   │       └── multi_tool_agent.py
+│       │   ├── routers/
+│       │   │   ├── basic_router.py
+│       │   │   └── advanced_router.py
+│       │   ├── tools/
+│       │   │   ├── base_tool.py
+│       │   │   ├── math_tools.py
+│       │   │   ├── string_tools.py
+│       │   │   ├── data_tools.py
+│       │   │   ├── datetime_tools.py
+│       │   │   ├── echo_tools.py
+│       │   │   ├── json_tools.py
+│       │   │   ├── csv_tools.py
+│       │   │   ├── database_tools.py
+│       │   │   ├── analysis_tools.py
+│       │   │   ├── api_tools.py
+│       │   │   └── visualization_tools.py
+│       │   ├── config.py
+│       │   ├── dependencies.py
+│       │   └── main.py
+│       ├── docs/
+│       └── tests/
 │   └── module2-story-agent/
 │       ├── app/
 │       │   ├── agents/story/
@@ -92,7 +134,8 @@ monorepo/
 │       └── tests/
 ├── tutorials/
 │   ├── module1/tutorial.md
-│   └── module2/tutorial.md
+│   ├── module2/tutorial.md
+│   └── module3/tutorial.md
 └── README.md
 ```
 
@@ -142,6 +185,12 @@ Each module includes comprehensive documentation:
 ## About the Instructor
 
 **Bradley Ross** is an experienced Agentics Engineer and Technical Lead, currently pursuing a Master's degree at Harvard University. Bradley has served as a Teaching Fellow/Course Assistant for Harvard's CS50 course for ten terms.  He mentors students and developers in software engineering, AI development, and web programming.
+
+---
+
+## Acknowledgements
+[OpenAI Agents Python](https://github.com/openai/openai-agents-python) [MIT License](https://github.com/openai/openai-agents-python/blob/main/LICENSE)
+
 
 ---
 
