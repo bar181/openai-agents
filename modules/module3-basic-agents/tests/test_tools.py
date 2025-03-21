@@ -51,20 +51,20 @@ def test_tool_result():
 # Math Tools Tests
 def test_add_tool():
     """Test the add tool."""
-    result = add.execute(a=2, b=3)
+    result = add(a=2, b=3)
     assert result.success
     assert result.output == 5
 
 def test_multiply_tool():
     """Test the multiply tool."""
-    result = multiply.execute(a=4, b=5)
+    result = multiply(a=4, b=5)
     assert result.success
     assert result.output == 20
 
 # String Tools Tests
 def test_to_uppercase_tool():
     """Test the to_uppercase tool."""
-    result = to_uppercase.execute(text="hello")
+    result = to_uppercase(text="hello")
     assert result.success
     assert result.output == "HELLO"
 
