@@ -17,6 +17,7 @@ By completing this module, you will:
 - Master agent lifecycle management (initialization, execution, termination)
 - Implement dynamic system prompts for flexible agent behavior
 - Create advanced agents with integrated tool suites
+- Develop streaming agents for real-time content delivery
 - Organize agents by complexity level (basic vs. advanced)
 - Design clear API endpoints using FastAPI
 - Write comprehensive tests for agent validation
@@ -26,10 +27,11 @@ By completing this module, you will:
 ## Module Structure Overview
 
 We've organized this module into two main categories:
-
 ### 1. Basic Agents
 - **Lifecycle Agent:** Learn fundamental agent state management
 - **Dynamic Prompt Agent:** Explore runtime prompt modifications
+- **Streaming Text Agent:** Implement real-time text streaming
+- **Streaming Items Agent:** Create structured item sequence streaming
 
 ### 2. Advanced Agents
 - **Generic Lifecycle Agent:** Implement sophisticated agents with tool integration
@@ -143,6 +145,10 @@ multi_tool_config = MultiToolAgentConfig(
 # Advanced Agent Endpoints
 @router.post("/generic-lifecycle")
 @router.post("/multi-tool")
+
+# Streaming Endpoints
+@router.post("/stream-text")
+@router.post("/stream-items")
 ```
 
 **Key Learning Points:**
@@ -152,6 +158,80 @@ multi_tool_config = MultiToolAgentConfig(
 - Adding comprehensive API documentation
 - Ensuring proper error handling and validation
 
+### Phase 4: Streaming Agents Development
+
+#### Streaming Text Agent
+```python
+# Example: Streaming Text Agent
+class StreamTextAgent:
+    async def initialize(self):
+        """Initialize streaming agent"""
+        return {"status": "initialized"}
+    
+    async def execute(self, prompt: str) -> AsyncGenerator[str, None]:
+        """Stream text response incrementally"""
+        async for chunk in self.stream_response(prompt):
+            yield chunk
+    
+    async def terminate(self):
+        """Clean up resources"""
+        return {"status": "terminated"}
+```
+
+**Key Learning Points:**
+- Implementing asynchronous generators for streaming
+- Managing real-time content delivery
+- Handling streaming response protocols
+- Enhancing user experience with incremental content
+
+#### Streaming Items Agent
+```python
+# Example: Streaming Items Agent
+class StreamItemsAgent:
+    async def execute(self, category: str, count: Optional[int] = None) -> AsyncGenerator[Dict[str, Any], None]:
+        """Stream structured items incrementally"""
+        # Status event
+        yield {"type": "status", "message": f"Generating {category} items..."}
+        
+        # Count event
+        count = count or await self._determine_count(category)
+        yield {"type": "count", "count": count}
+        
+        # Item events
+        for i in range(count):
+            item = await self._generate_item(category, i)
+            yield {"type": "item", "index": i + 1, "content": item}
+            
+        # Complete event
+        yield {"type": "complete", "message": f"Generated {count} {category} items."}
+```
+
+**Key Learning Points:**
+- Structuring streaming events for client processing
+- Implementing multi-stage streaming workflows
+- Managing state during streaming operations
+- Creating dynamic content generation pipelines
+
+#### Streaming API Endpoints
+```python
+# Streaming Endpoints
+@router.post("/stream-text")
+async def stream_text_endpoint(request: TextStreamRequest):
+    """Stream a text response from the agent."""
+    return StreamingResponse(generate(), media_type="text/plain")
+
+@router.post("/stream-items")
+async def stream_items_endpoint(request: ItemStreamRequest):
+    """Stream a sequence of items from the agent."""
+    return StreamingResponse(generate(), media_type="application/x-ndjson")
+```
+
+**Key Learning Points:**
+- Implementing FastAPI streaming responses
+- Managing different content types for streaming
+- Handling client connections during streaming
+- Implementing proper error handling for streams
+
 ---
 
 ## Working with the Code
@@ -159,8 +239,10 @@ multi_tool_config = MultiToolAgentConfig(
 ### Basic Agents Directory (`app/agents/basic/`)
 ```plaintext
 basic/
-├── lifecycle_agent.py     # Basic lifecycle management
-└── dynamic_prompt_agent.py # Dynamic prompt handling
+├── lifecycle_agent.py      # Basic lifecycle management
+├── dynamic_prompt_agent.py # Dynamic prompt handling
+├── stream_text_agent.py    # Streaming text responses
+└── stream_items_agent.py   # Streaming structured items
 ```
 
 ### Advanced Agents Directory (`app/agents/advanced/`)
@@ -174,17 +256,74 @@ advanced/
 ```plaintext
 tools/
 ├── base_tool.py         # Abstract base class for all tools
+│   ├── BaseTool         # Base class for all tools
+│   └── ToolResult       # Standardized result structure
+│
 ├── math_tools.py        # Mathematical operations
+│   ├── add              # Add two numbers
+│   └── multiply         # Multiply two numbers
+│
 ├── string_tools.py      # String manipulation
+│   ├── concatenate      # Join strings together
+│   └── to_uppercase     # Convert string to uppercase
+│
 ├── datetime_tools.py    # Time utilities
+│   ├── current_time     # Get current date and time
+│   └── add_days         # Add days to a date
+│
 ├── data_tools.py        # Data handling
+│   ├── get_item         # Get item from a list by index
+│   ├── summarize_list   # Generate summary statistics for a list
+│   └── fetch_mock_data  # Retrieve sample data for testing
+│
 ├── echo_tools.py        # Echo functionality
+│   └── echo             # Return input as output
+│
 ├── json_tools.py        # JSON validation and transformation
+│   ├── JsonTool         # JSON processing tool class
+│   ├── validate_json    # Validate JSON against schema
+│   └── transform_json   # Apply transformations to JSON
+│
 ├── csv_tools.py         # CSV parsing and generation
+│   ├── CsvTool          # CSV processing tool class
+│   ├── parse_csv        # Convert CSV to structured data
+│   └── generate_csv     # Create CSV from structured data
+│
 ├── database_tools.py    # Mock database operations
+│   ├── DatabaseTool     # Database interaction tool class
+│   ├── store_data       # Save data to database
+│   ├── retrieve_data    # Get data from database
+│   ├── list_keys        # List available keys
+│   ├── delete_data      # Remove data by key
+│   └── clear_database   # Reset database
+│
 ├── analysis_tools.py    # Text and data analysis
+│   ├── TextAnalysisTool # Text analysis tool class
+│   ├── analyze_sentiment # Determine text sentiment
+│   ├── extract_entities # Identify entities in text
+│   ├── extract_keywords # Extract important keywords
+│   ├── StatisticsTool   # Statistical analysis tool class
+│   ├── calculate_basic_stats # Calculate mean, median, mode, etc.
+│   ├── perform_correlation # Measure relationship between variables
+│   ├── PatternTool      # Pattern recognition tool class
+│   ├── find_patterns    # Identify patterns in data
+│   └── apply_regex      # Apply regular expressions
+│
 ├── api_tools.py         # API integration utilities
+│   ├── ApiTool          # API interaction tool class
+│   ├── make_request     # Send HTTP requests
+│   ├── CacheTool        # Caching tool class
+│   ├── cache_get        # Retrieve cached data
+│   ├── cache_set        # Store data in cache
+│   ├── RateLimiterTool  # Rate limiting tool class
+│   └── check_rate_limit # Verify request limits
+│
 └── visualization_tools.py # Data visualization
+    ├── VisualizationTool # Visualization tool class
+    ├── create_bar_chart  # Generate bar charts
+    ├── create_line_chart # Generate line charts
+    ├── create_pie_chart  # Generate pie charts
+    └── create_scatter_plot # Generate scatter plots
 ```
 
 ---
@@ -199,6 +338,9 @@ python -m pytest tests/test_basic_agents.py
 
 # Test advanced agents
 python -m pytest tests/test_advanced_agents.py
+
+# Test streaming agents
+python -m pytest tests/test_stream_text.py tests/test_stream_items.py
 ```
 
 Key test scenarios include:
@@ -212,6 +354,11 @@ Key test scenarios include:
   - Data visualization
   - Multi-step workflows
   - Context preservation
+- Streaming agent capabilities:
+  - Real-time text streaming
+  - Structured items streaming
+  - Custom instructions handling
+  - Error handling and validation
 
 ---
 
@@ -239,6 +386,8 @@ Key test scenarios include:
 1. **Basic Agent Exercise:**
    - Modify the lifecycle agent to include custom state tracking
    - Add new prompt templates to the dynamic prompt agent
+   - Enhance the streaming text agent with progress indicators
+   - Add new item types to the streaming items agent
 
 2. **Advanced Agent Exercise:**
    - Add a new tool to the generic lifecycle agent
@@ -246,9 +395,16 @@ Key test scenarios include:
    - Extend the multi-tool agent with a new tool category
    - Implement context preservation between tool executions
 
-3. **Integration Exercise:**
+3. **Streaming Agent Exercise:**
+   - Implement a streaming agent that combines text and items
+   - Add filtering capabilities to the streaming items agent
+   - Create a streaming visualization agent for real-time charts
+   - Implement pause/resume functionality for streaming responses
+
+4. **Integration Exercise:**
    - Create a new endpoint combining multiple agent capabilities
    - Implement error handling and validation
+   - Build a frontend demo that consumes streaming endpoints
 
 ---
 

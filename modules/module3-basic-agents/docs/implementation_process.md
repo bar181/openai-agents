@@ -112,6 +112,29 @@ This document summarizes the activities completed for Module 3: Basic OpenAI Age
      - Updated all tests to use the new endpoint structure
      - Updated documentation to reflect the endpoint changes
 
+9. **Implement Streaming Agents (Phase 2)**
+   - [✔] **Streaming Text Agent:**
+     - Created `app/agents/basic/stream_text_agent.py` implementing a text streaming agent.
+     - Developed functionality to generate and stream text progressively in real-time.
+     - Implemented asynchronous response handling for smooth streaming.
+     - Added lifecycle methods (initialize, execute, terminate) for proper resource management.
+   - [✔] **Streaming Items Agent:**
+     - Created `app/agents/basic/stream_items_agent.py` implementing an items streaming agent.
+     - Developed functionality to stream sequences of structured items (e.g., jokes, facts).
+     - Implemented dynamic item count determination using function calling.
+     - Added structured event types (status, count, item, complete) for client-side processing.
+   - [✔] **API Integration:**
+     - Updated `app/routers/basic_router.py` to include new streaming endpoints:
+       - `/stream-text`: Endpoint to stream text responses.
+       - `/stream-items`: Endpoint to stream sequential items.
+     - Added comprehensive Swagger documentation for the streaming endpoints.
+     - Implemented proper request/response models with FastAPI's StreamingResponse.
+   - [✔] **Comprehensive Testing:**
+     - Created `tests/test_stream_text.py` with tests for the text streaming endpoint.
+     - Created `tests/test_stream_items.py` with tests for the items streaming endpoint.
+     - Verified all streaming functionality works correctly with different inputs.
+     - Ensured proper error handling and validation for streaming endpoints.
+
 ---
 
 ## Summary
@@ -121,6 +144,8 @@ All planned tasks for Module 3 have been successfully completed and verified:
 - Implemented robust lifecycle management and dynamic prompt features.
 - Created a sophisticated generic lifecycle agent with extensive tool integration.
 - Developed a powerful multi-tool agent with advanced capabilities and tool integration.
+- Implemented streaming agents for real-time text and items generation.
+- Integrated streaming response functionality with FastAPI endpoints.
 - Organized agents logically between basic and advanced capabilities.
 - Integrated clear and logical FastAPI endpoints with RESTful design.
 - Developed comprehensive tests confirming all endpoint functionality.
