@@ -165,7 +165,7 @@ class BaseTool(ABC):
 #### 4.1 Advanced Agent Execution
 ```python
 @router.post(
-    "/agents/advanced/execute",
+    "/agents/advanced/multi-tool",
     response_model=AdvancedExecuteResponse,
     summary="Execute Advanced Agent with Enhanced Capabilities",
     description="""
@@ -245,7 +245,7 @@ The agent intelligently coordinates multiple tools to complete complex tasks whi
 def test_advanced_agent_json_processing():
     """Test JSON validation and transformation capabilities"""
     response = client.post(
-        "/agents/advanced/execute",
+        "/agents/advanced/multi-tool",
         json={"message": "Validate and transform JSON: {'name': 'test', 'value': 123}"},
         headers=headers
     )
@@ -257,7 +257,7 @@ def test_advanced_agent_json_processing():
 def test_advanced_agent_text_analysis():
     """Test sentiment analysis and entity extraction"""
     response = client.post(
-        "/agents/advanced/execute",
+        "/agents/advanced/multi-tool",
         json={"message": "Analyze sentiment of 'Great product!' and extract entities"},
         headers=headers
     )
@@ -269,7 +269,7 @@ def test_advanced_agent_text_analysis():
 def test_advanced_agent_data_visualization():
     """Test mock visualization generation"""
     response = client.post(
-        "/agents/advanced/execute",
+        "/agents/advanced/multi-tool",
         json={"message": "Create visualization for data: [1, 2, 3, 4, 5]"},
         headers=headers
     )
@@ -280,7 +280,7 @@ def test_advanced_agent_data_visualization():
 def test_advanced_agent_multi_step_workflow():
     """Test complex workflow with multiple tool interactions"""
     response = client.post(
-        "/agents/advanced/execute",
+        "/agents/advanced/multi-tool",
         json={
             "message": "Fetch data from 'source1', analyze sentiment, store results, and create visualization"
         },
@@ -319,7 +319,7 @@ def test_visualization_tool():
 def test_invalid_json_handling():
     """Test handling of invalid JSON input"""
     response = client.post(
-        "/agents/advanced/execute",
+        "/agents/advanced/multi-tool",
         json={"message": "Process invalid JSON: {invalid}"},
         headers=headers
     )
@@ -332,7 +332,7 @@ def test_rate_limit_handling():
     """Test rate limiting functionality"""
     for _ in range(10):  # Exceed rate limit
         response = client.post(
-            "/agents/advanced/execute",
+            "/agents/advanced/multi-tool",
             json={"message": "Test request"},
             headers=headers
         )
@@ -342,7 +342,7 @@ def test_rate_limit_handling():
 def test_context_preservation():
     """Test context maintenance across operations"""
     response = client.post(
-        "/agents/advanced/execute",
+        "/agents/advanced/multi-tool",
         json={
             "message": "Start multi-step process with context",
             "context": {"session_id": "test123"}

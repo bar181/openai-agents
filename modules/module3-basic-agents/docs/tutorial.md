@@ -33,6 +33,7 @@ We've organized this module into two main categories:
 
 ### 2. Advanced Agents
 - **Generic Lifecycle Agent:** Implement sophisticated agents with tool integration
+- **Multi-Tool Agent:** Create advanced agents with multiple tool capabilities and context management
 
 This structure helps you progressively build your understanding while keeping code organized and maintainable.
 
@@ -104,6 +105,53 @@ config = GenericAgentConfig(
 - Implementing lifecycle hooks for monitoring
 - Managing complex agent states
 
+#### Multi-Tool Agent with Advanced Capabilities
+```python
+# Example: Multi-Tool Agent Configuration
+multi_tool_config = MultiToolAgentConfig(
+    name="MultiToolAgent",
+    instructions="Process complex tasks using multiple tools",
+    tools=[
+        # Basic tools
+        echo, add, multiply, to_uppercase, current_time, fetch_mock_data,
+        # Advanced tools
+        json_tool, csv_tool, database_tool, text_analysis_tool,
+        statistics_tool, pattern_tool, api_tool, visualization_tool
+    ],
+    debug_mode=True
+)
+```
+
+**Key Learning Points:**
+- Integrating diverse tool categories (data processing, analysis, integration)
+- Managing context between operations
+- Implementing state machines for execution phases
+- Handling errors and recovery
+- Processing multi-step workflows
+
+### Phase 3: RESTful API Design
+
+#### API Endpoints
+```python
+# Basic Agent Endpoints
+@router.post("/lifecycle/initialize")
+@router.post("/lifecycle/execute")
+@router.post("/lifecycle/terminate")
+@router.post("/dynamic-prompt/update")
+@router.post("/dynamic-prompt/execute")
+
+# Advanced Agent Endpoints
+@router.post("/generic-lifecycle")
+@router.post("/multi-tool")
+```
+
+**Key Learning Points:**
+- Designing clean, RESTful API endpoints
+- Organizing endpoints by agent type and functionality
+- Implementing proper request/response models
+- Adding comprehensive API documentation
+- Ensuring proper error handling and validation
+
 ---
 
 ## Working with the Code
@@ -118,17 +166,25 @@ basic/
 ### Advanced Agents Directory (`app/agents/advanced/`)
 ```plaintext
 advanced/
-└── generic_lifecycle_agent.py # Enhanced agent with tools
+├── generic_lifecycle_agent.py # Enhanced agent with tools
+└── multi_tool_agent.py        # Advanced agent with multiple tool capabilities
 ```
 
 ### Tools Directory (`app/tools/`)
 ```plaintext
 tools/
-├── math_tools.py      # Mathematical operations
-├── string_tools.py    # String manipulation
-├── datetime_tools.py  # Time utilities
-├── data_tools.py      # Data handling
-└── echo_tools.py      # Echo functionality
+├── base_tool.py         # Abstract base class for all tools
+├── math_tools.py        # Mathematical operations
+├── string_tools.py      # String manipulation
+├── datetime_tools.py    # Time utilities
+├── data_tools.py        # Data handling
+├── echo_tools.py        # Echo functionality
+├── json_tools.py        # JSON validation and transformation
+├── csv_tools.py         # CSV parsing and generation
+├── database_tools.py    # Mock database operations
+├── analysis_tools.py    # Text and data analysis
+├── api_tools.py         # API integration utilities
+└── visualization_tools.py # Data visualization
 ```
 
 ---
@@ -150,6 +206,12 @@ Key test scenarios include:
 - Dynamic prompt updates
 - Tool integration verification
 - Error handling checks
+- Multi-tool agent capabilities:
+  - JSON processing
+  - Text analysis
+  - Data visualization
+  - Multi-step workflows
+  - Context preservation
 
 ---
 
@@ -181,6 +243,8 @@ Key test scenarios include:
 2. **Advanced Agent Exercise:**
    - Add a new tool to the generic lifecycle agent
    - Implement custom lifecycle hooks for logging
+   - Extend the multi-tool agent with a new tool category
+   - Implement context preservation between tool executions
 
 3. **Integration Exercise:**
    - Create a new endpoint combining multiple agent capabilities
