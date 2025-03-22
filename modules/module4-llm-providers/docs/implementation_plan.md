@@ -1,193 +1,121 @@
-# Module 3: Basic and Advanced OpenAI Agents Implementation Plan
+## 2. `docs/implementation_plan.md` (5 Phases)
 
-This module builds upon the foundation established in Module 2, introducing both basic and advanced agent functionalities, including lifecycle management, dynamic prompts, and enhanced tool integration.
+```markdown
+# Module 4: Custom LLM Providers — Implementation Plan
 
-**Module 3 Directory Structure:**
+This plan has 5 phases to add multi-provider support (OpenAI, Gemini, Requestry, OpenRouter) plus a model recommender. It follows principles outlined in the main README.
 
-```plaintext
-module3-basic-agents/
-├── app/
-│   ├── agents/
-│   │   ├── basic/
-│   │   │   ├── lifecycle_agent.py        # Basic lifecycle management
-│   │   │   ├── dynamic_prompt_agent.py   # Dynamic system prompt usage
-│   │   │   ├── stream_text_agent.py      # Streaming text responses
-│   │   │   └── stream_items_agent.py     # Streaming structured items
-│   │   └── advanced/
-│   │       └── generic_lifecycle_agent.py # Enhanced generic lifecycle agent
-│   ├── routers/
-│   │   ├── basic_router.py               # API endpoints for basic agents
-│   │   └── advanced_router.py            # API endpoints for advanced agents
-│   ├── tools/
-│   │   ├── __init__.py
-│   │   ├── math_tools.py                 # Math operation tools
-│   │   ├── data_tools.py                 # Data handling tools
-│   │   ├── string_tools.py               # String manipulation tools
-│   │   ├── datetime_tools.py             # Time-related tools
-│   │   └── echo_tools.py                 # Echo functionality
-│   ├── config.py                         # Environment and configuration
-│   ├── dependencies.py                   # Reusable dependencies
-│   └── main.py                           # FastAPI application entry
-├── docs/
-│   ├── phase1.md                         # Basic agents implementation
-│   ├── phase2.md                         # Dynamic prompt implementation
-│   ├── phase3.md                         # Advanced agents implementation
-│   ├── implementation_plan.md            # This document
-│   └── implementation_process.md         # Implementation checklist
-├── tests/
-│   ├── test_basic_agents.py             # Tests for basic agents
-│   ├── test_advanced_agents.py          # Tests for advanced agents
-│   ├── test_stream_text.py              # Tests for text streaming
-│   └── test_stream_items.py             # Tests for items streaming
-└── README.md                            # Module overview
-```
+---
 
-**Implementation Plan:**
+## Phase 1 — Environment & Setup
 
-1. **Set Up Module Structure:**
-   - Create the module directory structure with separate basic and advanced agent directories
-   - Set up tools directory for shared functionality
+1. **Copy or inherit all files from Module 3**  
+2. **Create new directory structure** under `module4-llm-providers/`
+   - `app/agents/llm_providers/...`
+   - `app/routers/llm_router.py`
+   - `tests/`
+   - `docs/`
+3. **Initialize environment variables** in `.env`:
+   - `OPENAI_API_KEY`
+   - `GEMINI_API_KEY`
+   - `REQUESTRY_API_KEY`
+   - `OPENROUTER_API_KEY`
+   - Any custom model references (e.g. `EXAMPLE_MODEL_NAME`)
+4. **Confirm basic logging** works
+5. **Draft tests**: `test_openai_agent.py`, etc. with placeholders
 
-2. **Develop Basic Agents:**
-   - **Lifecycle Agent (`lifecycle_agent.py`):**
-     ```python
-     # Basic lifecycle management
-     initialize_agent()    # Set up agent state
-     execute_agent()       # Process user input
-     terminate_agent()     # Clean up resources
+**Exit Criteria**:
+- Basic folder structure
+- `.env` set
+- Empty or skeleton test files
+
+---
+
+## Phase 2 — OpenAI Multi-Model Agent
+
+1. **Implement** `openai_agent.py`:
+   - Support `gpt-4o`, `o3-mini`, etc.
+   - Use environment variables for API keys
+   - Provide `process_prompt(...)` returning consistent structure
+2. **Create Tests** in `test_openai_agent.py`:
+   - Check valid model usage
+   - Check missing API key
+   - Mock `openai` calls if needed
+3. **Add Endpoint** in `llm_router.py` for `/agents/llm-providers/openai`
+4. **Update** `docs/implementation_process.md` after test pass
+
+**Exit Criteria**:
+- Working OpenAI multi-model agent
+- Tests passing
+
+---
+
+## Phase 3 — Gemini, Requestry, OpenRouter Agents
+
+1. **Gemini**:  
+   - `gemini_agent.py` loads `GEMINI_API_KEY`
+   - Uses code snippet from prior version  
+   - Provide test coverage: `test_gemini_agent.py`
+2. **Requestry**:  
+   - `requestry_agent.py` with `REQUESTRY_API_KEY`
+   - Python snippet from Requestry docs  
+   - Validate model usage: `cline/o3-mini`, `cline/4o-mini`
+3. **OpenRouter**:  
+   - `openrouter_agent.py`
+   - Accepts `OPENROUTER_API_KEY`
+   - Uses standard base URL: `https://openrouter.ai/api/v1`
+   - Add optional headers (e.g. `HTTP-Referer`, `X-Title`)
+4. **Endpoints** in `llm_router.py`:
+   - `/agents/llm-providers/gemini`
+   - `/agents/llm-providers/requestry`
+   - `/agents/llm-providers/openrouter`
+5. **Refactor** code to unify patterns if needed
+6. **Update** logs and docs upon completion
+
+**Exit Criteria**:
+- All agents tested and functional
+- Endpoints returning success with valid credentials
+
+---
+
+## Phase 4 — Model Recommender
+
+1. **Create** `recommender_agent.py`:
+   - Accepts a structure:
+     ```json
+     {
+       "task_type": "reasoning",
+       "prompt_length": 200
+     }
      ```
-   - **Dynamic Prompt Agent (`dynamic_prompt_agent.py`):**
-     ```python
-     # Dynamic prompt handling
-     update_system_prompt()  # Update agent's instructions
-     execute()              # Process with current prompt
-     ```
-   - **Streaming Text Agent (`stream_text_agent.py`):**
-     ```python
-     class StreamTextAgent:
-         # Real-time text streaming
-         initialize()      # Set up streaming agent
-         execute()         # Stream text responses
-         terminate()       # Clean up resources
-         stream_response() # Generate text incrementally
-     ```
-   - **Streaming Items Agent (`stream_items_agent.py`):**
-     ```python
-     class StreamItemsAgent:
-         # Structured items streaming
-         initialize()      # Set up streaming agent
-         execute()         # Stream items responses
-         terminate()       # Clean up resources
-         stream_items()    # Generate items incrementally
-     ```
+   - Returns recommended provider and model
+   - (Optional) Use an LLM to decide or just a simple lookup
+2. **Test** in `test_recommender_agent.py`:
+   - Various scenarios: short conversation vs. big reasoning
+3. **Add** endpoint `/agents/llm-providers/recommend-model`
+4. **Refactor** if logic grows complex
+5. **Update** docs and logs
 
-3. **Develop Advanced Agents:**
-   - **Generic Lifecycle Agent (`generic_lifecycle_agent.py`):**
-     ```python
-     class GenericLifecycleAgent:
-         # Enhanced lifecycle with tools
-         __init__()      # Configure agent with tools
-         run()           # Process input with tools
-     
-     class GenericLifecycleHooks:
-         # Lifecycle event monitoring
-         on_agent_start()
-         on_agent_end()
-         on_tool_start()
-         on_tool_end()
-     ```
+**Exit Criteria**:
+- Recommender agent picks plausible model
+- Consistent response format validated by tests
 
-4. **Implement Tool Suite:**
-   - Create specialized tool modules:
-     ```python
-     # Math operations
-     add()
-     multiply()
-     
-     # String manipulation
-     to_uppercase()
-     
-     # Data operations
-     fetch_mock_data()
-     
-     # Time utilities
-     current_time()
-     
-     # Basic utilities
-     echo()
-     ```
+---
 
-5. **Develop API Routers:**
-   - **Basic Router (`basic_router.py`):**
-     - Lifecycle management endpoints
-     - Dynamic prompt endpoints
-     - Streaming text endpoint
-     - Streaming items endpoint
-   - **Advanced Router (`advanced_router.py`):**
-     - Generic lifecycle agent endpoints with tool integration
+## Phase 5 — Documentation & Final Checks
 
-6. **FastAPI Integration:**
-   - Update `main.py` to include both basic and advanced routers
-   - Configure proper endpoint prefixes:
-     ```python
-     app.include_router(basic_router, prefix="/agents/basic")
-     app.include_router(advanced_router, prefix="/agents/advanced")
-     ```
+1. **Add** or finalize these docs:
+   - `docs/phase1.md` through `docs/phase5.md` (detailed tutorials)
+   - `docs/guidelines.md` (already drafted)
+   - `docs/implementation_process.md` (update after each step)
+   - `README.md` clarifications (key references)
+2. **Run** full test suite
+3. **Review** logs for environment issues or keys not set
+4. **Validate** final code meets PEP 8 and any style guidelines
 
-7. **Configuration Management:**
-   - Update `config.py` for new environment variables
-   - Enhance `dependencies.py` for shared functionality
+**Exit Criteria**:
+- All 5 phases done
+- Full coverage tests
+- Code merges into main branch
+- Module 4 release is ready
 
-8. **Documentation:**
-    - `phase1.md`: Basic agent implementation details
-    - `phase2.md`: Dynamic prompt agent details
-    - `phase3.md`: Advanced agent implementation details
-    - `phase4.md`: Streaming agents implementation details
-    - `implementation_process.md`: Track implementation progress
-
-9. **Testing Strategy:**
-   - **Basic Agent Tests:**
-     ```python
-     # test_basic_agents.py
-     test_lifecycle_management()
-     test_dynamic_prompt_updates()
-     ```
-   - **Streaming Agent Tests:**
-     ```python
-     # test_stream_text.py
-     test_stream_text_endpoint()
-     test_stream_text_with_custom_instructions()
-     test_stream_text_invalid_api_key()
-     test_stream_text_missing_prompt()
-     
-     # test_stream_items.py
-     test_stream_items_endpoint()
-     test_stream_items_with_count()
-     test_stream_items_with_custom_instructions()
-     test_stream_items_invalid_api_key()
-     test_stream_items_missing_category()
-     ```
-   - **Advanced Agent Tests:**
-     ```python
-     # test_advanced_agents.py
-     test_generic_lifecycle_agent_tools()
-     test_lifecycle_hooks()
-     ```
-
-10. **README Updates:**
-    - Module overview
-    - Setup instructions
-    - Usage examples for both basic and advanced features
-
-This implementation plan provides a structured approach to building both basic and advanced agent functionalities, with clear separation of concerns and comprehensive testing coverage.
-
-The plan emphasizes:
-- Clear separation between basic and advanced capabilities
-- Comprehensive tool integration
-- Robust lifecycle management
-- Real-time streaming capabilities
-- Structured data streaming
-- Thorough testing strategy
-- Detailed documentation at each phase
-
-Follow this plan to create a well-organized, maintainable, and feature-rich agent system.
