@@ -42,14 +42,16 @@ class GeminiAgent:
             raise ValueError("GEMINI_API_KEY environment variable is not set")
         
         # Get model from environment or use default
-        self.default_model = "gemini-1.0-pro"
+        self.default_model = os.getenv("GEMINI_MODEL", "gemini-2.0-pro-exp-02-05")
+        self.endpoint = os.getenv("GEMINI_ENDPOINT")
         
         # List of supported models
         self.supported_models = [
             "gemini-1.0-pro",
             "gemini-1.0-pro-vision",
             "gemini-1.5-pro",
-            "gemini-1.5-flash"
+            "gemini-1.5-flash",
+            "gemini-2.0-pro-exp-02-05"
         ]
         
         # Initialize Gemini client
@@ -95,7 +97,7 @@ class GeminiAgent:
                 - system_message: (optional) System message to set context
                 - max_tokens: (optional) Maximum tokens to generate
                 - temperature: (optional) Sampling temperature
-                - model: (optional) Model to use, defaults to the model in .env or gemini-1.0-pro
+                - model: (optional) Model to use, defaults to the model in .env
         
         Returns:
             A dictionary with the response data

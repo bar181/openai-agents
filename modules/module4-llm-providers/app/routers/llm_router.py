@@ -5,9 +5,11 @@ This module provides FastAPI endpoints for interacting with various LLM provider
 """
 
 import logging
+import os
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional
+from dotenv import load_dotenv
 
 from app.agents.llm_providers.openai_agent import OpenAIAgent
 from app.agents.llm_providers.gemini_agent import GeminiAgent
@@ -16,6 +18,9 @@ from app.agents.llm_providers.openrouter_agent import OpenRouterAgent
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+# Load environment variables
+load_dotenv()
 
 router = APIRouter()
 
@@ -31,7 +36,7 @@ class OpenAIRequest(BaseModel):
 class GeminiRequest(BaseModel):
     """Request model for Gemini endpoint."""
     prompt: str = Field(..., description="The text prompt to send to the model")
-    model: str = Field("gemini-pro", description="The model to use for generation")
+    model: str = Field(os.getenv("GEMINI_MODEL", "gemini-2.0-pro-exp-02-05"), description="The model to use for generation")
     max_tokens: Optional[int] = Field(100, description="Maximum number of tokens to generate")
     temperature: Optional[float] = Field(0.7, description="Sampling temperature")
     system_message: Optional[str] = Field("You are a helpful assistant.", description="System message to set context")
