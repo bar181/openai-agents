@@ -10,6 +10,7 @@ import logging
 import openai
 from typing import Dict, Any
 
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ class OpenAIAgent:
     def __init__(self):
         """Initialize the OpenAI agent with API key from environment."""
         self.api_key = os.getenv("OPENAI_API_KEY", "")
-        self.default_model = "gpt-3.5-turbo"
+        self.default_model = "gpt-4o-mini"
         logger.info(f"OpenAI agent initialized with default model: {self.default_model}")
     
     def process_prompt(self, prompt_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -29,7 +30,7 @@ class OpenAIAgent:
         Args:
             prompt_data: Dictionary containing:
                 - prompt (str): The user's text prompt
-                - model (str, optional): Model name (default: gpt-3.5-turbo)
+                - model (str, optional): Model name (default: gpt-4o-mini)
                 - max_tokens (int, optional): Maximum tokens to generate
                 - temperature (float, optional): Sampling temperature
             

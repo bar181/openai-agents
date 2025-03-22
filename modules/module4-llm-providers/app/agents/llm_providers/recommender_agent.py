@@ -29,7 +29,7 @@ class RecommenderAgent:
     {
       "status": "success",
       "recommended_provider": "openai",
-      "model": "gpt-3.5-turbo"
+      "model": "gpt-4o-mini"
     }
     """
 
@@ -39,10 +39,10 @@ class RecommenderAgent:
         self.provider_models = {
             "openai": {
                 "reasoning": "gpt-4o",
-                "conversation": "gpt-3.5-turbo",
+                "conversation": "gpt-4o-mini",
                 "creative": "gpt-4o",
                 "code": "gpt-4o",
-                "default": "gpt-3.5-turbo"
+                "default": "gpt-4o-mini"
             },
             "gemini": {
                 "reasoning": "gemini-2.0-pro-exp-02-05",
@@ -60,10 +60,10 @@ class RecommenderAgent:
             },
             "openrouter": {
                 "reasoning": "openai/gpt-4o",
-                "conversation": "openai/gpt-4o",
+                "conversation": "openai/gpt-4o-mini",
                 "creative": "openai/gpt-4o",
                 "code": "openai/gpt-4o",
-                "default": "openai/gpt-4o"
+                "default": "openai/gpt-4o-mini"
             }
         }
         

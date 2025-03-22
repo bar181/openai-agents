@@ -23,13 +23,12 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-router = APIRouter()
-
+router = APIRouter(tags=["LLM Providers"])
 
 class OpenAIRequest(BaseModel):
     """Request model for OpenAI endpoint."""
     prompt: str = Field(..., description="The text prompt to send to the model")
-    model: str = Field("gpt-3.5-turbo", description="The model to use for generation")
+    model: str = Field("gpt-4o-mini", description="The model to use for generation")
     max_tokens: Optional[int] = Field(100, description="Maximum number of tokens to generate")
     temperature: Optional[float] = Field(0.7, description="Sampling temperature")
 

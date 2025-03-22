@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from app.dependencies import verify_api_key
 from app.agents.hello_world_agent import run_hello_agent
 
-router = APIRouter()
+router = APIRouter(tags=["Get Started Agents"])
 
 class HelloRequest(BaseModel):
     message: str = Field(..., description="The user's message to the agent.")
