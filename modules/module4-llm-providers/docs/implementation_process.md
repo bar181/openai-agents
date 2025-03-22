@@ -3,24 +3,42 @@
 ## Checklist of Activities
 
 ### Phase 1 — Environment & Setup
-- [ ] Copy or inherit all files from Module 3
-- [ ] Create directory structure:
-  - [ ] `app/agents/llm_providers/...`
-  - [ ] `app/routers/llm_router.py`
-  - [ ] `tests/`
-  - [ ] `docs/`
-- [ ] Initialize environment variables in `.env`:
-  - [ ] `OPENAI_API_KEY`
-  - [ ] `GEMINI_API_KEY`
-  - [ ] `REQUESTRY_API_KEY`
-  - [ ] `OPENROUTER_API_KEY`
-- [ ] Confirm basic logging works
-- [ ] Draft tests with placeholders:
-  - [ ] `test_openai_agent.py`
-  - [ ] `test_gemini_agent.py`
-  - [ ] `test_requestry_agent.py`
-  - [ ] `test_openrouter_agent.py`
-  - [ ] `test_recommender_agent.py`
+- [x] Copy or inherit all files from Module 3
+- [x] Create directory structure:
+  - [x] `app/agents/llm_providers/...`
+  - [x] `app/routers/llm_router.py`
+  - [x] `tests/`
+  - [x] `docs/`
+- [x] Initialize environment variables in `.env`:
+  - [x] `OPENAI_API_KEY`
+  - [x] `GEMINI_API_KEY`
+  - [x] `REQUESTRY_API_KEY`
+  - [x] `OPENROUTER_API_KEY`
+- [x] Confirm basic logging works
+- [x] Draft tests with placeholders:
+  - [x] `test_openai_agent.py`
+  - [x] `test_gemini_agent.py`
+  - [x] `test_requestry_agent.py`
+  - [x] `test_openrouter_agent.py`
+  - [x] `test_recommender_agent.py`
+
+## Phase 1 Updates
+- Created the `app/agents/llm_providers` folder structure with placeholder files:
+  - `__init__.py`
+  - `openai_agent.py`
+  - `gemini_agent.py`
+  - `requestry_agent.py`
+  - `openrouter_agent.py`
+  - `recommender_agent.py`
+- Created `app/routers/llm_router.py` with placeholder endpoints
+- Updated `app/config.py` to include all required API keys with proper logging
+- Added placeholder test files in `tests/` directory:
+  - `test_openai_agent.py`
+  - `test_gemini_agent.py`
+  - `test_requestry_agent.py`
+  - `test_openrouter_agent.py`
+  - `test_recommender_agent.py`
+- Each test file includes a basic logging test to verify the environment
 
 ### Phase 2 — OpenAI Multi-Model Agent
 - [ ] Implement `openai_agent.py`:
