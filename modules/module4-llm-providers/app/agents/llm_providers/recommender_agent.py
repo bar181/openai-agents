@@ -171,5 +171,5 @@ class RecommenderAgent:
                 "status": "error",
                 "message": f"Error processing recommendation: {str(e)}",
                 "recommended_provider": "openai",  # Fallback to a safe default
-                "model": "gpt-3.5-turbo"
+                "model": "gpt-4o-mini"
             }
