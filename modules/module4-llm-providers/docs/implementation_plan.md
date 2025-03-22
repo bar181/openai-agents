@@ -122,17 +122,12 @@ This plan has 5 phases to add multi-provider support (OpenAI, Gemini, Requestry,
 
 ## Phase 5 — Documentation & Final Checks
 
-1. **Add** or finalize these docs:
+1. **Add** or finalize these docs located in modules/module4-llm-providers/
    - `docs/phase1.md` through `docs/phase5.md` (detailed tutorials)
    - `docs/guidelines.md` (already drafted)
    - `docs/implementation_process.md` (update after each step)
    - `README.md` clarifications (key references)
-2. **Run** full test suite
-3. **Review** logs for environment issues or keys not set
-4. **Validate** final code meets PEP 8 and any style guidelines
+   - `implementation_process.md` - ensure checlist is complete - all tests have been confirmed they pass
+   - `docs/tutorial.md` (ensure full step by step guide)
+2. Update root/readme.md
 
-**Exit Criteria**:
-- All 5 phases done
-- Full coverage tests
-- Code merges into main branch
-- Module 4 release is ready
