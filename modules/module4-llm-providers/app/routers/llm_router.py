@@ -15,6 +15,7 @@ from app.agents.llm_providers.openai_agent import OpenAIAgent
 from app.agents.llm_providers.gemini_agent import GeminiAgent
 from app.agents.llm_providers.requestry_agent import RequestryAgent
 from app.agents.llm_providers.openrouter_agent import OpenRouterAgent
+from app.agents.llm_providers.recommender_agent import RecommenderAgent
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -61,12 +62,26 @@ class OpenRouterRequest(BaseModel):
     headers: Optional[Dict[str, str]] = Field(None, description="Optional headers for the request")
 
 
+class RecommenderRequest(BaseModel):
+    """Request model for Model Recommender endpoint."""
+    task_type: str = Field(..., description="Type of task (reasoning, conversation, creative, code)")
+    prompt_length: int = Field(..., description="Length of the prompt in characters")
+
+
 class LLMResponse(BaseModel):
     """Response model for LLM endpoints."""
     status: str = Field(..., description="Status of the request (success or error)")
     message: str = Field(..., description="Response text or error message")
     model: str = Field(..., description="Model used for generation")
     usage: Optional[Dict[str, Any]] = Field(None, description="Token usage statistics")
+
+
+class RecommenderResponse(BaseModel):
+    """Response model for Model Recommender endpoint."""
+    status: str = Field(..., description="Status of the request (success or error)")
+    recommended_provider: str = Field(..., description="Recommended LLM provider")
+    model: str = Field(..., description="Recommended model")
+    message: Optional[str] = Field(None, description="Additional information or error message")
 
 
 @router.post("/openai", response_model=LLMResponse)
@@ -170,10 +185,43 @@ async def openrouter_endpoint(request_data: OpenRouterRequest):
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 
-@router.post("/recommend-model")
-async def recommend_model_endpoint():
+@router.post("/recommend-model", response_model=RecommenderResponse)
+async def recommend_model_endpoint(request_data: RecommenderRequest):
     """
     Endpoint for model recommendation.
-    Will be implemented in Phase 4.
+    
+    Accepts task type and prompt length, and returns a recommended provider and model.
+    
+    Example request:
+    ```json
+    {
+      "task_type": "reasoning",
+      "prompt_length": 200
+    }
+    ```
+    
+    Example response:
+    ```json
+    {
+      "status": "success",
+      "recommended_provider": "openai",
+      "model": "gpt-4o",
+      "message": "Based on reasoning task and 200 characters (short length)"
+    }
+    ```
     """
-    return {"status": "placeholder"}
+    logger.info(f"Received request for model recommendation with task_type: {request_data.task_type}, prompt_length: {request_data.prompt_length}")
+    
+    try:
+        agent = RecommenderAgent()
+        result = agent.process_prompt(request_data.dict())
+        
+        if result["status"] == "error":
+            logger.error(f"Error processing recommendation request: {result['message']}")
+            raise HTTPException(status_code=400, detail=result["message"])
+        
+        logger.info(f"Successfully processed recommendation request: {result['recommended_provider']}/{result['model']}")
+        return result
+    except Exception as e:
+        logger.error(f"Unexpected error in recommendation endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
