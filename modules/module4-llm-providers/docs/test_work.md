@@ -59,7 +59,7 @@ These errors suggest that the tool implementation has changed between Module 3 a
 
 ### 3. Story Agent Tests
 
-- **test_story_telling_agent_custom**: The test expected the story outline to include "A mysterious adventure", but it didn't. This suggests that the story agent is generating different content than what the test expects.
+- **test_story_telling_agent_custom**: The test expected the story outline to include "A mysterious adventure", but it didn't. This suggests that the story agent is generating different content than what the test expects.  To fix, change the test to be more explicit for the input to ensure the output included the desired text.
 
 ## Recommendations
 

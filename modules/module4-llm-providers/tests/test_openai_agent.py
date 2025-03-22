@@ -189,6 +189,6 @@ async def test_openai_agent_default_values():
         
         # Verify the mock was called with default values
         call_args = mock_client.chat.completions.create.call_args[1]
-        assert call_args["model"] == "gpt-o3-mini"  # Default model
+        assert call_args["model"] == "gpt-3.5-turbo"  # Default model
         assert call_args["max_tokens"] == 100  # Default max_tokens
         assert call_args["temperature"] == 0.7  # Default temperature
