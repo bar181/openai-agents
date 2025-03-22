@@ -1,104 +1,105 @@
 <!-- File: root/tutorials/module2/tutorial.md -->
 
-# Module 2 Tutorial: Story Telling Agent
+# Module 2 Tutorial: Storytelling Agent
 
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Master's Student at Harvard University, CS50 Teaching Fellow for 10 Terms*
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Director @ Agentics Foundation, Programmer and Data Scientist with over 20 years of experience, Master's Student at Harvard University, CS50 Teaching Fellow/Course Assistant, Instructor and Course Designer*
 
 ---
 
 ## Welcome to Module 2!
 
-Welcome back! Bradley Ross here. In Module 2, we're expanding on the basics from Module 1 (Hello World Agent) by diving deeper into more advanced concepts through building a Story Telling Agent. By the end of this module, you'll understand how to enhance a simple deterministic agent into creative narrative generators, using structured project management and thoughtful design.
+Welcome back! Bradley Ross here, ready to guide you through Module 2. In this module, you'll build upon the skills from Module 1 (Hello World Agent) by creating a Storytelling Agent. This project will introduce you to generating creative, engaging narratives using OpenAI-powered agents. You'll also learn structured project management, effective code organization, and rigorous testing techniques.
 
-**Note:** All files from Module 1 are retained in this module. A good practice to follow is copying the entire Module 1 directory and renaming it as your starting point. The detailed `/docs` files (`phase1.md`, `phase2.md`, and `implementation_process.md`) will guide your modifications.
+**Important:** To maintain consistency, start by copying your Module 1 directory and rename it appropriately. The detailed documents in `/docs` (`phase1.md`, `phase2.md`, and `implementation_process.md`) will serve as your roadmap.
 
 ---
 
-## Learning Goals
+## What You'll Achieve
 
-In this module, you will:
+By completing this module, you will:
 
-- Create multiple AI agents: Baseline, Custom, and Advanced story agents.
-- Reorganize and structure project folders effectively for scalability.
-- Integrate creative narrative enhancements into your agent.
-- Clearly define API endpoints using FastAPI.
-- Write comprehensive tests to ensure agent reliability.
+- Develop three distinct types of storytelling agents: Baseline, Custom, and Advanced.
+- Organize your project's files and directories for clarity and scalability.
+- Integrate creative narrative elements into your AI agents.
+- Define clear and robust API endpoints using FastAPI.
+- Write thorough tests to validate the reliability of your agents.
 
 ---
 
 ## Recommended Workflow
 
-1. **Start by copying Module 1** and renaming it to a new working folder.
-2. **Follow the `/docs` files closely**—these documents serve as your roadmap.
-3. **Review the example agent files** (`baseline_story_agent.py`, `custom_story_agent.py`, and `advanced_story_agent.py`) carefully.
-4. **Consult this tutorial frequently**, referring to the code files as you proceed.
+Follow this structured path for optimal results:
 
-*For advanced users:* Point your AI coding tools to these existing files to expedite customizing or extending your agents.
+1. **Start Fresh:** Copy your completed Module 1 folder as a new starting point.
+2. **Review `/docs` Files:** Regularly consult these documents as you progress.
+3. **Analyze Provided Code:** Carefully examine the provided examples (`baseline_story_agent.py`, `custom_story_agent.py`, `advanced_story_agent.py`).
+4. **Consult This Tutorial Frequently:** Use this tutorial alongside your coding to stay on track.
 
----
-
-## Detailed Module Structure
-
-This module introduces three agents with increasing complexity:
-
-### 1. **Baseline Story Agent** (`baseline_story_agent.py`)
-
-- **Purpose:** Generate a deterministic, simple story outline.
-- **Implementation:** Based on the OpenAI deterministic pattern.
-- **Pseudocode:**
-  ```
-  function generate_outline(topic):
-      return simple structured outline
-
-  create baseline agent using generate_outline tool
-
-  async run_baseline_agent(topic):
-      return agent-generated outline
-  ```
-
-### 2. **Custom Story Agent** (`custom_story_agent.py`)
-
-- **Purpose:** Enhance narrative creativity with detailed, vivid outlines.
-- **Implementation:** Extends baseline logic with more creative narrative instructions.
-- **Pseudocode:**
-  ```
-  function generate_custom_outline(topic):
-      return detailed, vivid story outline
-
-  create custom agent with generate_custom_outline tool
-
-  async run_custom_agent(topic):
-      return enhanced narrative outline
-  ```
-
-### 3. **Advanced Story Agent** (`advanced_story_agent.py`)
-
-- **Purpose:** Generate structured, multi-step stories using Pydantic models and a sophisticated workflow.
-- **Implementation:**
-  - Step 1: Structured outline generation.
-  - Step 2: Expand into full story.
-- **Pseudocode:**
-  ```
-  define StoryOutline model:
-      introduction, body, conclusion
-
-  function generate_advanced_outline(topic):
-      return structured StoryOutline
-
-  function generate_story_body(outline):
-      return complete story based on outline
-
-  create advanced agent with both tools
-
-  async run_advanced_agent(topic):
-      generate outline
-      generate full story from outline
-      return complete narrative
-  ```
+*Pro tip:* Use AI coding assistants by pointing them to the provided agent files to speed up customizations.
 
 ---
 
-## Project Structure Overview
+## Module Breakdown
+
+This module covers three increasingly sophisticated agents:
+
+### 1. **Baseline Story Agent (`baseline_story_agent.py`)**
+
+- **Objective:** Generate simple, structured story outlines.
+- **Approach:** Deterministic output following a clear, predictable structure.
+
+**Pseudocode:**
+```python
+function generate_outline(topic):
+    return simple structured outline
+
+async function run_baseline_agent(topic):
+    return agent-generated outline
+```
+
+### 2. **Custom Story Agent (`custom_story_agent.py`)**
+
+- **Objective:** Produce vivid, creatively enhanced narratives.
+- **Approach:** Extend baseline functionality with richer, descriptive content.
+
+**Pseudocode:**
+```python
+function generate_custom_outline(topic):
+    return detailed and vivid story outline
+
+async function run_custom_agent(topic):
+    return enhanced narrative outline
+```
+
+### 3. **Advanced Story Agent (`advanced_story_agent.py`)**
+
+- **Objective:** Create complex, structured stories using advanced workflows.
+- **Approach:** Two-step narrative creation leveraging structured Pydantic models.
+
+**Pseudocode:**
+```python
+class StoryOutline(BaseModel):
+    introduction: str
+    body: str
+    conclusion: str
+
+function generate_advanced_outline(topic):
+    return structured StoryOutline
+
+function generate_story_body(outline):
+    return expanded complete story
+
+async function run_advanced_agent(topic):
+    outline = generate_advanced_outline(topic)
+    story = generate_story_body(outline)
+    return complete narrative
+```
+
+---
+
+## Project Structure
+
+Your project should match this clear, scalable structure:
 
 ```
 module2-story-agent/
@@ -127,42 +128,39 @@ module2-story-agent/
 
 ---
 
-## Integrating Your Agents into FastAPI
+## FastAPI Integration
 
-### File: `routers/story_router.py`
+Integrate your storytelling agents into clear FastAPI endpoints (`routers/story_router.py`):
 
-Define clear API endpoints for each agent:
+- `/agents/story/baseline`
+- `/agents/story/custom`
+- `/agents/story/advanced`
 
-- **Baseline Endpoint:** `/agents/story/baseline`
-- **Custom Endpoint:** `/agents/story/custom`
-- **Advanced Endpoint:** `/agents/story/advanced`
+**Pseudocode Example:**
+```python
+@app.post("/agents/story/baseline")
+async def baseline_endpoint(topic: str):
+    return await run_baseline_agent(topic)
 
-*Pseudocode:*
+@app.post("/agents/story/custom")
+async def custom_endpoint(topic: str):
+    return await run_custom_agent(topic)
+
+@app.post("/agents/story/advanced")
+async def advanced_endpoint(topic: str):
+    return await run_advanced_agent(topic)
 ```
-define endpoint /baseline:
-    return baseline agent output
-
-define endpoint /custom:
-    return custom agent output
-
-define endpoint /advanced:
-    return advanced agent output
-```
-
-Refer to `story_router.py` for complete FastAPI integration details.
 
 ---
 
-## Testing Your Agents
+## Testing Your Work
 
-Testing is critical. All three endpoints are thoroughly tested in `tests/test_mod2_story.py`.
+Quality assurance is vital. Use provided test cases in `tests/test_mod2_story.py` to confirm:
 
-- **Test coverage includes:**
-  - Endpoint status code checks (expecting HTTP 200)
-  - Verifying returned outlines/stories include provided topics (case-insensitive)
+- Correct HTTP responses (expecting status code 200).
+- Outputs properly reflect the provided topics.
 
-To run tests:
-
+Execute tests regularly:
 ```bash
 python -m pytest tests/
 ```
@@ -171,21 +169,19 @@ Ensure all tests pass successfully.
 
 ---
 
-## Tips for Effective Learning
+## Best Practices for Learning
 
-- **Incremental Changes:** Make small, frequent changes and test each step thoroughly.
-- **Frequent Reviews:** Regularly revisit `/docs` files to confirm your implementation aligns with intended structure.
-- **Utilize AI Assistance:** Leverage AI code-writing tools by providing these module files as references.
+- **Make Small Changes:** Incremental updates make debugging simpler.
+- **Review Often:** Regularly check `/docs` files for alignment.
+- **Leverage AI Tools:** Use AI-powered coding tools to streamline your work.
 
 ---
 
-## Wrapping Up
+## Next Steps
 
-Great job completing Module 2! You've significantly expanded your understanding of agent complexity, code structure, API integration, and testing.
+Congratulations on completing Module 2! You're now capable of developing engaging storytelling agents, structuring clear codebases, and implementing rigorous testing. Module 3 will take your skills even further into the world of complex agent systems and advanced integrations.
 
-Module 3 will further deepen your skills with more complex agent workflows and functionalities, preparing you for real-world agent development.
+Keep innovating, and see you in the next module!
 
-Thank you, and keep building amazing agents!
-
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, CS50 Teaching Fellow*
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Director @ Agentics Foundation*
 
