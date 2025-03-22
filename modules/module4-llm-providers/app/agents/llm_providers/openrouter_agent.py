@@ -108,11 +108,29 @@ class OpenRouterAgent:
             
             # Extract usage information if available
             usage = {}
-            if hasattr(response, 'usage'):
+            if hasattr(response, 'usage') and response.usage is not None:
+                try:
+                    usage = {
+                        "prompt_tokens": response.usage.prompt_tokens,
+                        "completion_tokens": response.usage.completion_tokens,
+                        "total_tokens": response.usage.total_tokens
+                    }
+                except AttributeError as e:
+                    logger.warning(f"Could not extract usage information: {str(e)}")
+                    # Provide default usage values
+                    usage = {
+                        "prompt_tokens": 0,
+                        "completion_tokens": 0,
+                        "total_tokens": 0,
+                        "note": "Token usage information not available"
+                    }
+            else:
+                # Provide default usage values when usage is not available
                 usage = {
-                    "prompt_tokens": response.usage.prompt_tokens,
-                    "completion_tokens": response.usage.completion_tokens,
-                    "total_tokens": response.usage.total_tokens
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                    "note": "Token usage information not available"
                 }
             
             logger.info(f"OpenRouter prompt processed successfully with model: {model_name}")

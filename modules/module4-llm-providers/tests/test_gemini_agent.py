@@ -20,18 +20,15 @@ def test_basic_logging():
 @pytest.mark.asyncio
 async def test_gemini_agent_init_missing_api_key():
     """Test that GeminiAgent raises an error when API key is missing."""
-    # Save original API key if it exists
     original_api_key = os.environ.get("GEMINI_API_KEY")
-    
-    # Remove API key from environment
     if "GEMINI_API_KEY" in os.environ:
         del os.environ["GEMINI_API_KEY"]
-    
-    # Test that agent initialization raises ValueError
-    with pytest.raises(ValueError, match="GEMINI_API_KEY environment variable is not set"):
-        GeminiAgent()
-    
-    # Restore original API key if it existed
+
+    # Patch load_dotenv to prevent loading the .env file
+    with patch("app.agents.llm_providers.gemini_agent.load_dotenv", lambda: None):
+        with pytest.raises(ValueError, match="GEMINI_API_KEY environment variable is not set"):
+            GeminiAgent()
+
     if original_api_key:
         os.environ["GEMINI_API_KEY"] = original_api_key
 
@@ -61,7 +58,7 @@ async def test_gemini_agent_process_prompt_success(mock_generative_model, mock_c
         "system_message": "You are a test assistant.",
         "max_tokens": 50,
         "temperature": 0.5,
-        "model": "gemini-pro"
+        "model": "gemini-2.0-pro-exp-02-05"  # Updated to match the supported model
     }
     
     result = agent.process_prompt(prompt_data)
@@ -69,7 +66,7 @@ async def test_gemini_agent_process_prompt_success(mock_generative_model, mock_c
     # Verify the result
     assert result["status"] == "success"
     assert result["message"] == "This is a test response from Gemini."
-    assert result["model"] == "gemini-pro"
+    assert result["model"] == "gemini-2.0-pro-exp-02-05"  # Updated to match the supported model
     assert "usage" in result
     assert result["usage"]["note"] == "Token counts are estimates as Gemini API doesn't provide exact usage"
     
@@ -93,13 +90,15 @@ async def test_gemini_agent_process_prompt_error(mock_generative_model, mock_con
     # Set up mock to raise an exception
     mock_model_instance = MagicMock()
     mock_model_instance.start_chat.side_effect = Exception("Test error")
+    # Also make generate_content raise an exception to ensure error status
+    mock_model_instance.generate_content.side_effect = Exception("Test error")
     mock_generative_model.return_value = mock_model_instance
     
     # Create agent and process prompt
     agent = GeminiAgent()
     prompt_data = {
         "prompt": "Test prompt",
-        "model": "gemini-pro"
+        "model": "gemini-2.0-pro-exp-02-05"  # Updated to match the supported model
     }
     
     result = agent.process_prompt(prompt_data)
@@ -107,7 +106,7 @@ async def test_gemini_agent_process_prompt_error(mock_generative_model, mock_con
     # Verify the result
     assert result["status"] == "error"
     assert "Error processing prompt: Test error" in result["message"]
-    assert result["model"] == "gemini-pro"
+    assert result["model"] == "gemini-2.0-pro-exp-02-05"  # Updated to match the supported model
     
     # Clean up
     if "GEMINI_API_KEY" in os.environ:
