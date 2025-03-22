@@ -6,3 +6,4 @@ pydantic
 openai-agents
 pytest
 pytest-asyncio
+google-generativeai
