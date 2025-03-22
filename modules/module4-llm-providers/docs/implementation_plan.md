@@ -1,6 +1,3 @@
-## 2. `docs/implementation_plan.md` (5 Phases)
-
-```markdown
 # Module 4: Custom LLM Providers — Implementation Plan
 
 This plan has 5 phases to add multi-provider support (OpenAI, Gemini, Requestry, OpenRouter) plus a model recommender. It follows principles outlined in the main README.
@@ -48,6 +45,11 @@ This plan has 5 phases to add multi-provider support (OpenAI, Gemini, Requestry,
 - Working OpenAI multi-model agent
 - Tests passing
 
+**Confirmed Working Models**:
+- `gpt-3.5-turbo` - Default model, good balance of performance and cost
+- `gpt-4o` - Latest model with advanced capabilities
+- `gpt-4-turbo` - Powerful model with strong reasoning capabilities
+
 ---
 
 ## Phase 3 — Gemini, Requestry, OpenRouter Agents
@@ -75,6 +77,22 @@ This plan has 5 phases to add multi-provider support (OpenAI, Gemini, Requestry,
 **Exit Criteria**:
 - All agents tested and functional
 - Endpoints returning success with valid credentials
+
+**Confirmed Working Models**:
+
+**Gemini**:
+- `gemini-2.0-pro-exp-02-05` - Default model, experimental version with advanced capabilities
+- `gemini-1.5-pro` - Stable model with good performance
+- `gemini-1.5-flash` - Faster, more efficient model for simpler tasks
+- `gemini-1.0-pro` - Original model, still supported
+
+**Requestry**:
+- `cline/o3-mini` - Default model, efficient and cost-effective
+- `cline/4o-mini` - More powerful model with advanced capabilities
+
+**OpenRouter**:
+- `openai/gpt-4o` - Default model, OpenAI's latest model through OpenRouter
+- Many other models available through the OpenRouter platform
 
 ---
 
@@ -118,4 +136,3 @@ This plan has 5 phases to add multi-provider support (OpenAI, Gemini, Requestry,
 - Full coverage tests
 - Code merges into main branch
 - Module 4 release is ready
-
