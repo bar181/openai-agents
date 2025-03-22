@@ -1,68 +1,43 @@
-# Module 3: Basic and Advanced OpenAI Agents
+# Module 4: Custom LLM Providers
 
-This module introduces a comprehensive exploration of agent development, from basic lifecycle management to advanced tool integration. Through a structured learning path, you'll master both fundamental and sophisticated agent concepts.
-
+This module extends our agent capabilities by integrating multiple LLM providers (OpenAI, Gemini, Requestry, OpenRouter) and implementing a model recommender system to select the most appropriate provider and model for specific tasks.
 
 ## Features
 
-### Basic Agents
-- **Lifecycle Management:** Initialize, execute, and terminate agents
-- **Dynamic System Prompts:** Update agent behavior at runtime
-- **Streaming Text Agent:** Generate and stream text responses in real-time
-- **Streaming Items Agent:** Stream sequences of structured items incrementally
+### LLM Provider Agents
+- **OpenAI Agent:** Support for multiple OpenAI models (gpt-3.5-turbo, gpt-4o, etc.)
+- **Gemini Agent:** Integration with Google's Gemini models
+- **Requestry Agent:** Support for Requestry's model routing capabilities
+- **OpenRouter Agent:** Access to multiple models through OpenRouter's unified API
 
-### Advanced Agents
-- **Generic Lifecycle Agent:** Enhanced agent with comprehensive tool integration
-- **Multi-Tool Agent:** Advanced agent with multiple tool capabilities and context management
-- **Integrated Tools Suite:**
-  - **Basic Tools:**
-    - Mathematical operations (add, multiply)
-    - String manipulation (concatenate, to_uppercase)
-    - Data operations (get_item, summarize_list, fetch_mock_data)
-    - Time utilities (current_time, add_days)
-    - Echo functionality
-  - **Advanced Tools:**
-    - JSON processing (validate_json, transform_json)
-    - CSV handling (parse_csv, generate_csv)
-    - Database operations (store_data, retrieve_data, list_keys, delete_data, clear_database)
-    - Text analysis (analyze_sentiment, extract_entities, extract_keywords)
-    - Statistics (calculate_basic_stats, perform_correlation)
-    - Pattern matching (find_patterns, apply_regex)
-    - API integration (make_request, cache_get, cache_set, check_rate_limit)
-    - Visualization (create_bar_chart, create_line_chart, create_pie_chart, create_scatter_plot)
+### Model Recommender
+- **Task-Based Selection:** Recommends provider and model based on task type
+- **Length-Aware Recommendations:** Considers prompt length for optimal selection
+- **Intelligent Mapping:** Maps specific tasks to the most appropriate provider/model combination
+
+### Common Features Across Providers
+- **Standardized Interface:** Consistent API across all providers
+- **Comprehensive Error Handling:** Robust error management for each provider
+- **Usage Tracking:** Token usage statistics for all providers
+- **Logging:** Detailed logging for debugging and monitoring
 
 ## Project Structure
 
 ```plaintext
-module3-basic-agents/
+module4-llm-providers/
 ├── app/
 │   ├── agents/
-│   │   ├── basic/
-│   │   │   ├── lifecycle_agent.py        # Basic lifecycle management
-│   │   │   ├── dynamic_prompt_agent.py   # Dynamic system prompt usage
-│   │   │   ├── stream_text_agent.py      # Streaming text responses
-│   │   │   └── stream_items_agent.py     # Streaming structured items
-│   │   └── advanced/
-│   │       ├── generic_lifecycle_agent.py # Enhanced generic lifecycle agent
-│   │       └── multi_tool_agent.py        # Advanced agent with multiple tool capabilities
+│   │   └── llm_providers/
+│   │       ├── openai_agent.py        # OpenAI integration
+│   │       ├── gemini_agent.py        # Google Gemini integration
+│   │       ├── requestry_agent.py     # Requestry integration
+│   │       ├── openrouter_agent.py    # OpenRouter integration
+│   │       └── recommender_agent.py   # Model recommender system
 │   ├── routers/
-│   │   ├── basic_router.py               # Basic agents endpoints
-│   │   └── advanced_router.py            # Advanced agents endpoints
-│   └── tools/                            # Comprehensive tool implementations
-│       ├── base_tool.py                  # Base tool class and result handling
-│       ├── math_tools.py                 # Mathematical operations (add, multiply)
-│       ├── string_tools.py               # String manipulation (concatenate, to_uppercase)
-│       ├── data_tools.py                 # Data handling (get_item, summarize_list, fetch_mock_data)
-│       ├── datetime_tools.py             # Time utilities (current_time, add_days)
-│       ├── echo_tools.py                 # Echo functionality
-│       ├── json_tools.py                 # JSON processing (validate_json, transform_json)
-│       ├── csv_tools.py                  # CSV handling (parse_csv, generate_csv)
-│       ├── database_tools.py             # Database operations (store_data, retrieve_data, etc.)
-│       ├── analysis_tools.py             # Text and data analysis (sentiment, entities, keywords)
-│       ├── api_tools.py                  # API integration (requests, caching, rate limiting)
-│       └── visualization_tools.py        # Data visualization (charts, plots)
-├── docs/                                 # Implementation guides
-└── tests/                                # Comprehensive test suite
+│   │   └── llm_router.py              # Endpoints for all providers
+│   └── tools/                         # Inherited tools from Module 3
+├── docs/                              # Implementation guides
+└── tests/                             # Comprehensive test suite
 ```
 
 ## Getting Started
@@ -71,7 +46,7 @@ module3-basic-agents/
    ```bash
    # Clone the repository
    git clone <repository-url>
-   cd openai-agents/modules/module3-basic-agents
+   cd openai-agents/modules/module4-llm-providers
 
    # Create and activate virtual environment (optional)
    python -m venv venv
@@ -88,8 +63,9 @@ module3-basic-agents/
    # Copy environment template
    cp .env.sample .env
 
-   # Edit .env with your settings
+   # Edit .env with your API keys
    # Required: OPENAI_API_KEY
+   # Optional: GEMINI_API_KEY, REQUESTRY_API_KEY, OPENROUTER_API_KEY
    ```
 
 3. **Run the FastAPI Server:**
@@ -103,26 +79,50 @@ module3-basic-agents/
    python -m pytest tests/
 
    # Run specific test suites
-   python -m pytest tests/test_basic_agents.py
-   python -m pytest tests/test_advanced_agents.py
-   python -m pytest tests/test_stream_text.py
-   python -m pytest tests/test_stream_items.py
+   python -m pytest tests/test_openai_agent.py
+   python -m pytest tests/test_gemini_agent.py
+   python -m pytest tests/test_requestry_agent.py
+   python -m pytest tests/test_openrouter_agent.py
+   python -m pytest tests/test_recommender_agent.py
+   ```
+
+5. **Run Health Check:**
+   ```bash
+   # Check connectivity with all providers
+   python tests/health_check.py
    ```
 
 ## API Endpoints
 
-### Basic Agent Endpoints
-- `POST /agents/basic/lifecycle/initialize` - Initialize lifecycle agent
-- `POST /agents/basic/lifecycle/execute` - Execute lifecycle agent
-- `POST /agents/basic/lifecycle/terminate` - Terminate lifecycle agent
-- `POST /agents/basic/dynamic-prompt/update` - Update dynamic prompt
-- `POST /agents/basic/dynamic-prompt/execute` - Execute with current prompt
-- `POST /agents/basic/stream-text` - Stream text responses incrementally
-- `POST /agents/basic/stream-items` - Stream sequences of structured items
+### LLM Provider Endpoints
+- `POST /agents/llm-providers/openai` - Process prompts with OpenAI models
+- `POST /agents/llm-providers/gemini` - Process prompts with Gemini models
+- `POST /agents/llm-providers/requestry` - Process prompts with Requestry models
+- `POST /agents/llm-providers/openrouter` - Process prompts with OpenRouter models
 
-### Advanced Agent Endpoints
-- `POST /agents/advanced/generic-lifecycle` - Execute generic lifecycle agent with tools
-- `POST /agents/advanced/multi-tool` - Execute multi-tool agent with advanced capabilities
+### Model Recommender Endpoint
+- `POST /agents/llm-providers/recommend-model` - Get provider/model recommendations based on task
+
+## Supported Models
+
+### OpenAI
+- `gpt-3.5-turbo` - Default model, good balance of performance and cost
+- `gpt-4o` - Latest model with advanced capabilities
+- `gpt-4-turbo` - Powerful model with strong reasoning capabilities
+
+### Gemini
+- `gemini-2.0-pro-exp-02-05` - Default model, experimental version with advanced capabilities
+- `gemini-1.5-pro` - Stable model with good performance
+- `gemini-1.5-flash` - Faster, more efficient model for simpler tasks
+- `gemini-1.0-pro` - Original model, still supported
+
+### Requestry
+- `cline/o3-mini` - Default model, efficient and cost-effective
+- `cline/4o-mini` - More powerful model with advanced capabilities
+
+### OpenRouter
+- `openai/gpt-4o` - Default model, OpenAI's latest model through OpenRouter
+- Many other models available through the OpenRouter platform
 
 ## Documentation
 
@@ -130,14 +130,15 @@ Detailed documentation is available in the `/docs` directory:
 - `implementation_plan.md` - Project structure and implementation strategy
 - `implementation_process.md` - Step-by-step implementation guide
 - `phase1.md`, `phase2.md`, `phase3.md`, `phase4.md` - Detailed phase documentation
+- `guidelines.md` - Coding standards and best practices
 - `tutorial.md` - Comprehensive learning guide
 
 ## Development Workflow
 
-1. Start with basic agents to understand core concepts
-2. Explore streaming agents for real-time content delivery
-3. Progress to advanced agents with tool integration
-4. Run tests frequently to verify functionality
+1. Start with understanding the provider interfaces and standardized response format
+2. Explore each provider's unique capabilities and limitations
+3. Use the model recommender to optimize provider selection for specific tasks
+4. Run health checks to verify connectivity with all providers
 5. Consult documentation for detailed guidance
 
 ## Contributing
@@ -154,6 +155,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-This module provides a structured learning path from basic to advanced agent development, including real-time streaming capabilities and comprehensive tool integration. Through hands-on implementation of various agent types and features, you'll gain practical experience in building sophisticated AI agent systems with both synchronous and streaming interactions, leveraging a wide range of tools for enhanced functionality.
+This module provides a comprehensive framework for integrating multiple LLM providers into your applications, with a smart recommender system to optimize model selection based on task requirements. Through this implementation, you'll gain practical experience in working with diverse AI providers and building systems that can leverage the strengths of each.
 
 For detailed guidance, refer to the tutorial in `/docs/tutorial.md`.
