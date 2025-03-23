@@ -1,122 +1,165 @@
-## 1. `docs/guidelines.md`
+# Guidelines for Module 5 — Orchestration (Guardrails, Handoffs, Tracing)
 
-# Guidelines for Module 454
-
-This document outlines module 4 coding and design standards.
+This document outlines coding and design standards for Module 5, which covers advanced orchestration techniques including guardrails, agent handoffs, and tracing.
 
 ---
 
 ## 1. Naming and Project Structure
 
-- Place LLM provider agents under `app/agents/llm_providers/`.
-- Create a single FastAPI router in `app/routers/llm_router.py`.
-- Each provider agent should implement a consistent interface, such as:
+- Place orchestration-related agents and components under:
+  ```
+  app/agents/orchestration/
+  ```
+  Example filenames:
+  ```
+  input_guardrail_agent.py
+  output_guardrail_agent.py
+  triage_agent.py
+  specialized_agents.py
+  ```
+
+- FastAPI routers should be organized within:
+  ```
+  app/routers/orchestration_router.py
+  ```
+
+- Define consistent guardrail and handoff interfaces:
   ```python
-  class BaseLLMAgent:
-      def process_prompt(self, prompt_data: Dict[str, Any]) -> Dict[str, Any]:
-          raise NotImplementedError("Implement prompt processing.")
-  ```
-- Example filenames:
-  ```
-  gemini_agent.py
-  requestry_agent.py
-  openrouter_agent.py
-  openai_agent.py
-  recommender_agent.py
+  class BaseGuardrail:
+      async def run_guardrail(self, context, agent_input):
+          raise NotImplementedError("Implement guardrail logic.")
+
+  class BaseHandoff:
+      async def invoke_handoff(self, context, agent_input):
+          raise NotImplementedError("Implement handoff logic.")
   ```
 
 ---
 
 ## 2. Endpoint Conventions
 
-Use these endpoint patterns in `llm_router.py`:
+Define clear endpoints in `orchestration_router.py`:
 
-1. **POST** `/agents/llm-providers/openai`
-2. **POST** `/agents/llm-providers/gemini`
-3. **POST** `/agents/llm-providers/requestry`
-4. **POST** `/agents/llm-providers/openrouter`
-5. **POST** `/agents/llm-providers/recommend-model`
+1. **POST** `/agents/orchestration/triage`
+2. **POST** `/agents/orchestration/handoff`
+3. **POST** `/agents/orchestration/input-guardrail`
+4. **POST** `/agents/orchestration/output-guardrail`
 
-Keep request/response schemas consistent:
-- Request:
-  ```json
-  {
-    "prompt": "user text",
-    "model": "gpt-o3-mini",
-    "max_tokens": 100,
-    "temperature": 0.7
-  }
-  ```
-- Response:
-  ```json
-  {
-    "status": "success",
-    "message": "...",
-    "model": "gpt-o3-mini",
-    "usage": { "prompt_tokens": 123, "completion_tokens": 222 }
-  }
-  ```
+Maintain a consistent request/response schema structure:
+
+- Request Example:
+```json
+{
+  "message": "User input message to the agent.",
+  "context": {"session_id": "abc123"}
+}
+```
+
+- Response Example:
+```json
+{
+  "status": "success",
+  "response": "Agent response message.",
+  "guardrail_triggered": false,
+  "handoff_agent": "MathTutorAgent",
+  "trace_id": "trace-xyz-789"
+}
+```
 
 ---
 
 ## 3. Testing Conventions
 
-- Each provider has a test file in `tests/`, for example:
-  - `test_openai_agent.py`
-  - `test_gemini_agent.py`
-  - `test_requestry_agent.py`
-  - `test_openrouter_agent.py`
-  - `test_recommender_agent.py`
-- Write tests **before** implementing each provider:
-  1. Define expected input/output
-  2. Mock external calls if needed
-  3. Ensure coverage for missing model or invalid parameters
+Create comprehensive tests for orchestration functionality in the `tests/` directory:
+- `test_input_guardrail.py`
+- `test_output_guardrail.py`
+- `test_handoff.py`
+- `test_tracing.py`
+
+Write tests **prior to implementation**:
+1. Define clear scenarios and expected outcomes.
+2. Mock external API calls or complex agent interactions.
+3. Ensure coverage for guardrail triggers, successful handoffs, and tracing logs.
 
 ---
 
 ## 4. Logging and Error Handling
 
-- Use Python’s logging module with consistent patterns:
-  ```python
-  import logging
-  logger = logging.getLogger(__name__)
-  logger.info("Processing prompt...")
-  ```
-- For API errors, return JSON with `status=error`:
-  ```json
-  {
-    "status": "error",
-    "message": "API key missing",
-    "model": "unknown"
-  }
-  ```
-- Catch provider-specific exceptions (e.g., rate limit or invalid model name).
+- Utilize Python’s built-in logging consistently:
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.info("Running guardrail check...")
+```
+
+- Standardize API error responses:
+```json
+{
+  "status": "error",
+  "message": "Guardrail validation failed.",
+  "details": "Input not related to homework."
+}
+```
+
+- Catch specific exceptions for guardrails and handoffs:
+  - `InputGuardrailTripwireTriggered`
+  - `OutputGuardrailTripwireTriggered`
+  - `HandoffError`
 
 ---
 
 ## 5. Implementation Flow
 
-1. **Create tests**: For each agent or new feature, add test files.
-2. **Implement or refactor**: Code agent logic, environment usage, router endpoints.
-3. **Update docs**:
-   - `docs/implementation_process.md`: short summary of changes
-   - `README.md`: usage example or new details
-4. **Repeat**: Move on after passing tests.
+Follow a structured implementation approach:
+
+1. **Draft tests** for guardrails, handoffs, and tracing.
+2. **Implement guardrail agents**:
+   - Input guardrail (validate incoming requests).
+   - Output guardrail (validate outgoing responses).
+3. **Implement triage and handoff agents**.
+4. **Add tracing functionality** to log agent execution flow.
+5. **Refine documentation** and continuously update:
+   - `docs/implementation_process.md`
+   - `README.md`
 
 ---
 
 ## 6. Style Checks
 
-- Follow PEP 8 format (e.g. `black` or `flake8`).
-- Use type annotations for function signatures.
-- Keep docstrings consistent: “Args: … Returns: … Raises: …” format.
-- Maintain minimal usage of `the` and `its` in user-facing text.
+- Adhere strictly to PEP 8 formatting (use tools like `black` or `flake8`).
+- Annotate all functions and methods with type hints.
+- Use consistent docstring format:
+  ```python
+  """
+  Args:
+      input_message (str): The user's input message.
+  Returns:
+      GuardrailFunctionOutput: The result of the guardrail check.
+  Raises:
+      ValueError: If input_message is invalid.
+  """
+  ```
+
+- Minimize the use of "the" and "its" in user-facing documentation and responses.
 
 ---
 
-## 7. Future Expansions
+## 7. Tracing and Debugging
 
-- Additional providers can follow this same structure.
-- Agents can extend or implement `BaseLLMAgent`.
-- Tests can be expanded for concurrency, streaming, or advanced prompts.
+- Implement tracing with the OpenAI SDK tracing system:
+```python
+from agents import trace
 
+with trace("Orchestration Trace"):
+    result = await Runner.run(agent, input_message)
+```
+
+- Define custom trace processors if needed for advanced logging or external monitoring.
+
+---
+
+## 8. Future Expansions
+
+- Additional specialized guardrails and handoffs.
+- Enhanced tracing processors for integration with monitoring systems.
+- Expanded tests for complex multi-agent orchestration scenarios.
