@@ -1,5 +1,5 @@
 
-# backend/app/agents/hello_world_agent.py
+# module1-hello-world/app/agents/hello_world_agent.py
 
 
 from agents import Agent, Runner, function_tool

@@ -1,202 +1,130 @@
-<!-- File: README.md -->
+# Introduction to AI Agents: A Self-Paced Course
 
-# OpenAI Agents MonoRepo for FastAPI
-
-Welcome to the OpenAI Agents MonoRepo, a structured, self-paced course designed to teach you how to build, enhance, and deploy intelligent AI agents using the OpenAI Agents SDK and FastAPI. This repository is organized into clearly defined modules, each progressively introducing more complex agent functionalities and patterns.
- 
----
-
-## Current Status
-
-### Completed Modules
-
-**Module 1: Hello World Agent**
-- **Agent:** `hello_world_agent.py`
-- **Skills Learned:** Basic environment setup, agent implementation with OpenAI SDK, FastAPI integration, endpoint testing.
-
-**Module 2: Story Telling Agent**
-- **Agents:**
-  - `baseline_story_agent.py`: Generates basic deterministic outlines.
-  - `custom_story_agent.py`: Provides creatively enhanced outlines.
-  - `advanced_story_agent.py`: Implements a structured, multi-step story generation workflow.
-- **Skills Learned:** Project reorganization, advanced narrative generation, comprehensive API documentation, structured testing.
-
-**Module 3: Basic and Advanced OpenAI Agents**
-- **Agents:**
-  - Basic Agents:
-    - `lifecycle_agent.py`: Implements agent lifecycle management (initialization, execution, termination).
-    - `dynamic_prompt_agent.py`: Enables runtime updates to system prompts.
-    - `stream_text_agent.py`: Provides real-time streaming text responses.
-    - `stream_items_agent.py`: Delivers structured item sequences incrementally.
-  - Advanced Agents:
-    - `generic_lifecycle_agent.py`: Enhanced agent with comprehensive tool integration.
-    - `multi_tool_agent.py`: Advanced agent with multiple tool capabilities and context management.
-- **Tools:** Extensive tool suite including math operations, string manipulation, data handling, JSON processing, CSV handling, database operations, text analysis, API integration, and data visualization.
-- **Skills Learned:** Agent lifecycle management, dynamic system prompts, real-time streaming, tool integration, context management, comprehensive testing strategies.
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Director @ Agentics Foundation, Programmer and Data Scientist with over 20 years of experience, Master's Student at Harvard University, CS50 Teaching Fellow/Course Assistant, Instructor and Course Designer*
 
 ---
 
-## Upcoming Modules
+## Welcome to the Course!
 
-### Module 4: Custom LLM Providers
-- **Agent:** `custom_llm_agent.py`
+Welcome! I'm Bradley Ross, and I'm thrilled to guide you through this comprehensive, self-paced course on AI agent development. You'll gain practical experience creating intelligent agents using cutting-edge tools such as FastAPI and OpenAI's Python SDK.
 
-### Module 5: Supabase Integration
-- **Agent:** `supabase_agent.py`
-
-### Module 6: OpenAI Agent Tools
-- **Agents:** `file_search_agent.py`, `web_search_agent.py`
-
-### Module 7: Handoffs
-- **Agents:** `handoff_agent.py`, `message_filter.py`, `message_filter_streaming.py`
-
-### Module 8: Agent Patterns
-- **Agents:** `routing_agent.py`, `parallelization_agent.py`, `input_guardrails.py`, `output_guardrails.py`, `agents_as_tools.py`
-
-### Module 9: Research Agent
-- **Agent:** `research_agent.py`
-
-### Module 10: Edge Function Agents
-- **Agents:** To be determined (TypeScript to Python conversions)
-
-### Module 11: DSPy Integration
-- **Agent:** `dspy_agent.py`
-
-### Module 12: Single POST Endpoint Agents
-- **Agent:** `post_endpoint_agent.py`
-
-### Module 13: Dynamic Agents
-- **Agent:** `dynamic_creation_agent.py`
-
-### Advanced Modules
-- **Agents:** `chain_of_thought_agent.py`, `agent_swarm.py`, `reflection_agent.py`
+Whether you're starting your AI journey or expanding existing skills, each module in this course builds incrementally from fundamental concepts to advanced agentic architectures, enabling you to create real-world AI solutions.
 
 ---
 
-## Repository Structure
+## Who Should Take This Course?
 
-```
-monorepo/
-├── modules/
-│   └── module1-hello-world/
-│       ├── app/
-│       │   ├── agents/
-│       │   │   ├── hello_world_agent.py
-│       │   ├── routers/hello_world.py
-│       │   ├── config.py
-│       │   ├── dependencies.py
-│       │   └── main.py
-│       ├── docs/
-│       └── tests/
-│   └── module3-basic-agents/
-│       ├── app/
-│       │   ├── agents/
-│       │   │   ├── basic/
-│       │   │   │   ├── lifecycle_agent.py
-│       │   │   │   ├── dynamic_prompt_agent.py
-│       │   │   │   ├── stream_text_agent.py
-│       │   │   │   └── stream_items_agent.py
-│       │   │   └── advanced/
-│       │   │       ├── generic_lifecycle_agent.py
-│       │   │       └── multi_tool_agent.py
-│       │   ├── routers/
-│       │   │   ├── basic_router.py
-│       │   │   └── advanced_router.py
-│       │   ├── tools/
-│       │   │   ├── base_tool.py
-│       │   │   ├── math_tools.py
-│       │   │   ├── string_tools.py
-│       │   │   ├── data_tools.py
-│       │   │   ├── datetime_tools.py
-│       │   │   ├── echo_tools.py
-│       │   │   ├── json_tools.py
-│       │   │   ├── csv_tools.py
-│       │   │   ├── database_tools.py
-│       │   │   ├── analysis_tools.py
-│       │   │   ├── api_tools.py
-│       │   │   └── visualization_tools.py
-│       │   ├── config.py
-│       │   ├── dependencies.py
-│       │   └── main.py
-│       ├── docs/
-│       └── tests/
-│   └── module2-story-agent/
-│       ├── app/
-│       │   ├── agents/story/
-│       │   │   ├── baseline_story_agent.py
-│       │   │   ├── custom_story_agent.py
-│       │   │   └── advanced_story_agent.py
-│       │   ├── routers/story_router.py
-│       │   ├── config.py
-│       │   ├── dependencies.py
-│       │   └── main.py
-│       ├── docs/
-│       └── tests/
-├── tutorials/
-│   ├── module1/tutorial.md
-│   ├── module2/tutorial.md
-│   └── module3/tutorial.md
-└── README.md
-```
+This course is ideal for:
+
+- **Beginners and Intermediate Programmers** looking for hands-on experience with AI and agent development.
+- **Advanced Developers** who want deeper insights into multi-agent architectures and sophisticated AI integration strategies.
+- **Students and Professionals** aiming to build marketable skills and impactful portfolio projects.
 
 ---
 
-## Getting Started
+## Course Structure
 
-**1. Clone the Repository:**
-```bash
-git clone <repository_url>
-cd monorepo
-```
+The course is structured into distinct, incrementally complex modules within a clear monorepo layout.
 
-**2. Set Up Your Environment:**
-```bash
-python -m venv env
-source env/bin/activate  # On Windows: env\Scripts\activate
-pip install -r modules/module1-hello-world/requirements.txt
-```
+### Completed Modules:
 
-**3. Run the FastAPI Server:**
-```bash
-cd modules/module1-hello-world
-python -m uvicorn app.main:app --reload
-```
+- **Module 1: Hello World Agent**  
+  *Skills:* FastAPI basics, environment setup, API authentication, testing.  
+  *Outcome:* Deployable "Hello World" AI agent.
 
-Access Swagger UI at [http://localhost:8000/docs](http://localhost:8000/docs).
+- **Module 2: Storytelling Agent**  
+  *Skills:* Deterministic and creative narrative generation, structured project organization, comprehensive testing.  
+  *Outcome:* Sophisticated agents generating detailed story outlines and narratives.
 
-**4. Execute Tests:**
-```bash
-python -m pytest tests/
-```
+- **Module 3: Basic and Advanced OpenAI Agents**  
+  *Skills:* Streaming responses, dynamic system prompts, lifecycle management, multi-tool integration.  
+  *Outcome:* Real-time interactive agents with advanced capabilities and tool integration.
 
-Repeat these steps within each module folder as you progress.
+- **Module 4: Custom LLM Providers**  
+  *Skills:* Integration of multiple LLM providers (OpenAI, Gemini, Requestry, OpenRouter), intelligent model selection.  
+  *Outcome:* Robust system supporting diverse AI model integrations and intelligent recommendations.
+
+### Upcoming Modules:
+
+- **Module 5: Supabase Integration**  
+  *State management, user logging, data storage with Supabase.*
+
+- **Module 6: OpenAI Agent Tools**  
+  *Advanced file search, web search integration.*
+
+- **Module 7: Agent Handoffs**  
+  *Seamless delegation and collaboration between multiple agents.*
+
+- **Module 8: Agent Patterns**  
+  *Agent routing, parallelization, and strategic agent architecture.*
+
+- **Module 9: Research Agent**  
+  *Multi-agent workflows, structured research, and information retrieval.*
+
+- **Advanced Modules:**  
+  *Agent swarms, reflective agents, chain-of-thought reasoning, and more.*
 
 ---
 
-## Documentation and Learning Resources
+## How to Use This Course
 
-Each module includes comprehensive documentation:
-- **Implementation Plans:** Detailed setup and coding instructions.
-- **Phase Guides:** Step-by-step implementation with code snippets.
-- **Tutorials:** In-depth explanations, pseudocode, and examples in a guided format.
+### Structured Learning:
+
+- Work through modules sequentially for optimal comprehension.
+- Regularly review detailed `/docs` guides, implementation documents, and tutorials.
+- Utilize provided examples and tests as reference points and validation tools.
+
+### Recommended Workflow:
+
+1. **Clone or download each module** to your workspace.
+2. **Set up your environment** following the clear, step-by-step instructions provided.
+3. **Implement each step incrementally**, using tutorials, pseudocode, and examples provided.
+4. **Run tests frequently** to verify functionality and correctness.
+
+### Advanced Usage:
+
+- Customize and extend provided templates to match real-world project requirements.
+- Leverage AI coding assistants (e.g., GitHub Copilot) to accelerate development.
+
+---
+
+## Tools and Technologies Covered
+
+- **Python (3.10+)**
+- **FastAPI & Uvicorn**
+- **OpenAI Python SDK**
+- **Supabase** (planned integration)
+- **OpenRouter and Custom LLM Providers**
+
+---
+
+## Prerequisites
+
+- Basic Python proficiency (functions, classes, async programming).
+- Familiarity with REST APIs.
+- Willingness to experiment and iterate frequently.
+
+---
+
+## Tips for Success
+
+- Regularly revisit and review module documentation and tutorials.
+- Validate your work at each step with comprehensive tests.
+- Engage actively with external documentation and resources.
+- Utilize AI assistants and community forums for troubleshooting.
 
 ---
 
 ## About the Instructor
 
-**Bradley Ross** is an experienced Agentics Engineer and Technical Lead, currently pursuing a Master's degree at Harvard University. Bradley has served as a Teaching Fellow/Course Assistant for Harvard's CS50 course for ten terms.  He mentors students and developers in software engineering, AI development, and web programming.
+**Bradley Ross** brings over 20 years of experience as an Agentics Engineer, Programmer, and Data Scientist. He is currently a Master's Student at Harvard University and serves as a Teaching Fellow and Course Assistant for Harvard's renowned CS50 course. Bradley has extensive experience mentoring thousands of students in software engineering, AI development, and innovative technology integration.
 
 ---
 
-## Acknowledgements
-[OpenAI Agents Python](https://github.com/openai/openai-agents-python) [MIT License](https://github.com/openai/openai-agents-python/blob/main/LICENSE)
+## Let's Get Started!
 
+Begin your journey today with **Module 1: Hello World Agent**, progressively advancing your skills with each subsequent module. Prepare to dive deep, build intelligent AI agents, and elevate your practical programming capabilities.
 
----
+Happy learning!
 
-## Conclusion
-
-This structured approach offers a robust framework for learning and building increasingly sophisticated AI agents. Whether you're developing practical skills or exploring advanced AI integration, this repository will serve as your comprehensive resource.
-
-Happy coding and exploring AI agents!
-
+*Bradley Ross – Instructor & Course Designer*

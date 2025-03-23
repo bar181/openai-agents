@@ -1,4 +1,4 @@
-# backend/app/main.py
+# module1-hello-world/app/main.py
 from fastapi import FastAPI
 from app.routers import hello_world
 

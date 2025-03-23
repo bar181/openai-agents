@@ -1,130 +1,64 @@
-# Introduction to AI Agents: A Self-Paced Course
+# Tutorials Folder Overview
 
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Director @ Agentics Foundation, Programmer and Data Scientist with over 20 years of experience, Master's Student at Harvard University, CS50 Teaching Fellow/Course Assistant, Instructor and Course Designer*
+Welcome to the Tutorials directory for the AI Agents course. This directory is structured to provide detailed, step-by-step guidance and comprehensive documentation for each module. Every module folder contains specific resources to help you build, test, and refine your AI agents efficiently.
 
----
+## Directory Structure
 
-## Welcome to the Course!
+Each module within the Tutorials directory follows a consistent structure:
 
-Welcome! I'm Bradley Ross, and I'm thrilled to guide you through this comprehensive, self-paced course on AI agent development. You'll gain practical experience creating intelligent agents using cutting-edge tools such as FastAPI and OpenAI's Python SDK.
+```plaintext
+tutorials/
+├── module1/
+│   ├── tutorial.md                 # Detailed, step-by-step tutorial
+│   ├── README.md                   # Overview and setup instructions
+│   ├── implementation_plan.md      # High-level project strategy and roadmap
+│   ├── implementation_process.md   # Checklist of implementation steps
+│   ├── phase1.md                   # Specific implementation details for Phase 1
+│   └── ...                         # Additional phase or guideline documents
+├── module2/
+│   └── ... (same structure)
+├── module3/
+│   └── ... (same structure)
+├── module4/
+│   └── ... (same structure)
+└── ...                             # Subsequent modules follow the same pattern
+```
 
-Whether you're starting your AI journey or expanding existing skills, each module in this course builds incrementally from fundamental concepts to advanced agentic architectures, enabling you to create real-world AI solutions.
+## Documents Included in Each Module
 
----
+- **tutorial.md:** 
+  - Provides detailed explanations, step-by-step instructions, code examples, and tips.
+  - Ideal for understanding how to practically implement module objectives.
 
-## Who Should Take This Course?
+- **README.md:**
+  - Quick-start guide containing module overview, setup instructions, and basic usage guidelines.
 
-This course is ideal for:
+- **implementation_plan.md:**
+  - High-level outline of the module's objectives and development roadmap.
 
-- **Beginners and Intermediate Programmers** looking for hands-on experience with AI and agent development.
-- **Advanced Developers** who want deeper insights into multi-agent architectures and sophisticated AI integration strategies.
-- **Students and Professionals** aiming to build marketable skills and impactful portfolio projects.
+- **implementation_process.md:**
+  - Checklist to track your progress and ensure all requirements are met.
 
----
+- **phaseX.md (e.g., phase1.md, phase2.md):**
+  - Detailed breakdowns of implementation phases with explicit instructions, code samples, and best practices.
 
-## Course Structure
+- **guidelines.md (if applicable):**
+  - Coding standards, testing methodologies, and recommended practices for maintaining quality and consistency.
 
-The course is structured into distinct, incrementally complex modules within a clear monorepo layout.
+## How to Use These Resources
 
-### Completed Modules:
+- Start each module by reviewing its `README.md` for a general overview and initial setup.
+- Move on to `tutorial.md` to follow along with detailed instructions.
+- Regularly reference `implementation_plan.md` and `implementation_process.md` to stay aligned with project goals.
+- Consult phase-specific documentation (`phaseX.md`) for detailed, incremental guidance as you build out each part of the module.
+- Use `guidelines.md` as a reference for maintaining coding and testing standards.
 
-- **Module 1: Hello World Agent**  
-  *Skills:* FastAPI basics, environment setup, API authentication, testing.  
-  *Outcome:* Deployable "Hello World" AI agent.
+## Recommended Workflow
 
-- **Module 2: Storytelling Agent**  
-  *Skills:* Deterministic and creative narrative generation, structured project organization, comprehensive testing.  
-  *Outcome:* Sophisticated agents generating detailed story outlines and narratives.
+1. **Initial Setup:** Follow the README instructions.
+2. **Detailed Learning:** Use `tutorial.md` to gain comprehensive knowledge.
+3. **Incremental Implementation:** Complete tasks using phase documents (`phase1.md`, etc.).
+4. **Validation and Review:** Regularly check against the implementation checklist.
+5. **Quality Assurance:** Adhere to provided guidelines to ensure code quality and consistency.
 
-- **Module 3: Basic and Advanced OpenAI Agents**  
-  *Skills:* Streaming responses, dynamic system prompts, lifecycle management, multi-tool integration.  
-  *Outcome:* Real-time interactive agents with advanced capabilities and tool integration.
-
-- **Module 4: Custom LLM Providers**  
-  *Skills:* Integration of multiple LLM providers (OpenAI, Gemini, Requestry, OpenRouter), intelligent model selection.  
-  *Outcome:* Robust system supporting diverse AI model integrations and intelligent recommendations.
-
-### Upcoming Modules:
-
-- **Module 5: Supabase Integration**  
-  *State management, user logging, data storage with Supabase.*
-
-- **Module 6: OpenAI Agent Tools**  
-  *Advanced file search, web search integration.*
-
-- **Module 7: Agent Handoffs**  
-  *Seamless delegation and collaboration between multiple agents.*
-
-- **Module 8: Agent Patterns**  
-  *Agent routing, parallelization, and strategic agent architecture.*
-
-- **Module 9: Research Agent**  
-  *Multi-agent workflows, structured research, and information retrieval.*
-
-- **Advanced Modules:**  
-  *Agent swarms, reflective agents, chain-of-thought reasoning, and more.*
-
----
-
-## How to Use This Course
-
-### Structured Learning:
-
-- Work through modules sequentially for optimal comprehension.
-- Regularly review detailed `/docs` guides, implementation documents, and tutorials.
-- Utilize provided examples and tests as reference points and validation tools.
-
-### Recommended Workflow:
-
-1. **Clone or download each module** to your workspace.
-2. **Set up your environment** following the clear, step-by-step instructions provided.
-3. **Implement each step incrementally**, using tutorials, pseudocode, and examples provided.
-4. **Run tests frequently** to verify functionality and correctness.
-
-### Advanced Usage:
-
-- Customize and extend provided templates to match real-world project requirements.
-- Leverage AI coding assistants (e.g., GitHub Copilot) to accelerate development.
-
----
-
-## Tools and Technologies Covered
-
-- **Python (3.10+)**
-- **FastAPI & Uvicorn**
-- **OpenAI Python SDK**
-- **Supabase** (planned integration)
-- **OpenRouter and Custom LLM Providers**
-
----
-
-## Prerequisites
-
-- Basic Python proficiency (functions, classes, async programming).
-- Familiarity with REST APIs.
-- Willingness to experiment and iterate frequently.
-
----
-
-## Tips for Success
-
-- Regularly revisit and review module documentation and tutorials.
-- Validate your work at each step with comprehensive tests.
-- Engage actively with external documentation and resources.
-- Utilize AI assistants and community forums for troubleshooting.
-
----
-
-## About the Instructor
-
-**Bradley Ross** brings over 20 years of experience as an Agentics Engineer, Programmer, and Data Scientist. He is currently a Master's Student at Harvard University and serves as a Teaching Fellow and Course Assistant for Harvard's renowned CS50 course. Bradley has extensive experience mentoring thousands of students in software engineering, AI development, and innovative technology integration.
-
----
-
-## Let's Get Started!
-
-Begin your journey today with **Module 1: Hello World Agent**, progressively advancing your skills with each subsequent module. Prepare to dive deep, build intelligent AI agents, and elevate your practical programming capabilities.
-
-Happy learning!
-
-*Bradley Ross – Instructor & Course Designer*
+Happy coding, and enjoy building your AI agent skills!

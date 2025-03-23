@@ -1,3 +1,5 @@
+# module1-hello-world/app/dependencies.py
+
 from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
 from app.config import API_KEY

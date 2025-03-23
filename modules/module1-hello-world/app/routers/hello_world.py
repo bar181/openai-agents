@@ -1,4 +1,4 @@
-# backend/app/routers/hello_world.py
+# module1-hello-world/app/routers/hello_world.py
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
