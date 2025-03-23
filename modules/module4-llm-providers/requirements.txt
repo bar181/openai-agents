@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-dotenv
+openai
+pydantic
+openai-agents
+pytest
+pytest-asyncio
+google-generativeai

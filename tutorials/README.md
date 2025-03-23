@@ -1,88 +1,90 @@
-<!-- File: root/tutorials/course_intro.md -->
-
 # Introduction to AI Agents: A Self-Paced Course
 
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Master's Student at Harvard University, CS50 Teaching Fellow for 10 Terms*
+*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, Director @ Agentics Foundation, Programmer and Data Scientist with over 20 years of experience, Master's Student at Harvard University, CS50 Teaching Fellow/Course Assistant, Instructor and Course Designer*
 
 ---
 
 ## Welcome to the Course!
 
-Hello and welcome! I'm Bradley Ross, your instructor for this self-paced course on AI Agents. Over the coming modules, you'll gain hands-on experience creating intelligent agents using cutting-edge AI technologies such as FastAPI and OpenAI’s Agents SDK.
+Welcome! I'm Bradley Ross, and I'm thrilled to guide you through this comprehensive, self-paced course on AI agent development. You'll gain practical experience creating intelligent agents using cutting-edge tools such as FastAPI and OpenAI's Python SDK.
 
-Whether you're just getting started or looking to expand your current knowledge, this course is structured to accommodate various skill levels, guiding you from basic "Hello World" examples to sophisticated, multi-agent systems.
+Whether you're starting your AI journey or expanding existing skills, each module in this course builds incrementally from fundamental concepts to advanced agentic architectures, enabling you to create real-world AI solutions.
 
 ---
 
 ## Who Should Take This Course?
 
-- **Beginner to Intermediate Programmers** seeking practical experience with AI development.
-- **Advanced Developers** looking to deepen their understanding of agent architectures and AI integration strategies.
-- **Students and Professionals** aiming to build real-world skills and portfolio projects.
+This course is ideal for:
+
+- **Beginners and Intermediate Programmers** looking for hands-on experience with AI and agent development.
+- **Advanced Developers** who want deeper insights into multi-agent architectures and sophisticated AI integration strategies.
+- **Students and Professionals** aiming to build marketable skills and impactful portfolio projects.
 
 ---
 
-## Course Structure and Modules
+## Course Structure
 
-This course is organized as a monorepo containing clearly defined modules. Each module incrementally builds on previous knowledge:
+The course is structured into distinct, incrementally complex modules within a clear monorepo layout.
 
 ### Completed Modules:
 
 - **Module 1: Hello World Agent**  
-  *Skills:* FastAPI basics, OpenAI SDK, environment setup, testing.  
-  *Outcome:* A functional, deployable "Hello World" AI agent.
+  *Skills:* FastAPI basics, environment setup, API authentication, testing.  
+  *Outcome:* Deployable "Hello World" AI agent.
 
-- **Module 2: Story Telling Agent**  
-  *Skills:* Deterministic and creative narrative generation, agent customization, advanced API integration, structured testing.
-  *Outcome:* Three progressively sophisticated agents capable of generating detailed story outlines and full narratives.
+- **Module 2: Storytelling Agent**  
+  *Skills:* Deterministic and creative narrative generation, structured project organization, comprehensive testing.  
+  *Outcome:* Sophisticated agents generating detailed story outlines and narratives.
+
+- **Module 3: Basic and Advanced OpenAI Agents**  
+  *Skills:* Streaming responses, dynamic system prompts, lifecycle management, multi-tool integration.  
+  *Outcome:* Real-time interactive agents with advanced capabilities and tool integration.
+
+- **Module 4: Custom LLM Providers**  
+  *Skills:* Integration of multiple LLM providers (OpenAI, Gemini, Requestry, OpenRouter), intelligent model selection.  
+  *Outcome:* Robust system supporting diverse AI model integrations and intelligent recommendations.
 
 ### Upcoming Modules:
 
-- **Module 3: Basic OpenAI Agents**  
-  - Streaming responses, dynamic system prompts, lifecycle management.
-
-- **Module 4: Custom LLM Providers**  
-  - Integration of external large language model providers.
-
 - **Module 5: Supabase Integration**  
-  - State management and logging with Supabase.
+  *State management, user logging, data storage with Supabase.*
 
 - **Module 6: OpenAI Agent Tools**  
-  - File search, web search integration.
+  *Advanced file search, web search integration.*
 
 - **Module 7: Agent Handoffs**  
-  - Seamless task delegation between agents.
+  *Seamless delegation and collaboration between multiple agents.*
 
 - **Module 8: Agent Patterns**  
-  - Agents as tools, routing, parallelization, and guardrails.
+  *Agent routing, parallelization, and strategic agent architecture.*
 
 - **Module 9: Research Agent**  
-  - Multi-agent workflows, information retrieval, structured research reports.
+  *Multi-agent workflows, structured research, and information retrieval.*
 
 - **Advanced Modules:**  
-  - Agent swarms, dynamic agents, reflection agents, chain-of-thought processes, and more.
+  *Agent swarms, reflective agents, chain-of-thought reasoning, and more.*
 
 ---
 
 ## How to Use This Course
 
-### Step-by-Step Learning:
+### Structured Learning:
 
-- Follow each module sequentially for structured progression.
-- Use the detailed `/docs` guides, tutorial files, and phase-based implementation plans.
-- Leverage code snippets and pseudocode to reinforce understanding.
+- Work through modules sequentially for optimal comprehension.
+- Regularly review detailed `/docs` guides, implementation documents, and tutorials.
+- Utilize provided examples and tests as reference points and validation tools.
 
 ### Recommended Workflow:
 
-1. **Clone or copy** each module’s folder structure to your workspace.
-2. **Set up your environment** using provided instructions.
-3. **Implement each module incrementally**, referencing tutorials and documentation.
-4. **Test rigorously** to ensure functionality at every step.
+1. **Clone or download each module** to your workspace.
+2. **Set up your environment** following the clear, step-by-step instructions provided.
+3. **Implement each step incrementally**, using tutorials, pseudocode, and examples provided.
+4. **Run tests frequently** to verify functionality and correctness.
 
 ### Advanced Usage:
 
-- Customize provided templates to your specific project needs.
-- Utilize AI coding assistants (e.g., GitHub Copilot) to streamline development.
+- Customize and extend provided templates to match real-world project requirements.
+- Leverage AI coding assistants (e.g., GitHub Copilot) to accelerate development.
 
 ---
 
@@ -90,39 +92,39 @@ This course is organized as a monorepo containing clearly defined modules. Each 
 
 - **Python (3.10+)**
 - **FastAPI & Uvicorn**
-- **OpenAI Agents SDK**
-- **Supabase (planned integration)**
-- **OpenRouter (planned integration)**
+- **OpenAI Python SDK**
+- **Supabase** (planned integration)
+- **OpenRouter and Custom LLM Providers**
 
 ---
 
 ## Prerequisites
 
-- Python basics (functions, classes, async programming)
-- Familiarity with API concepts and REST principles
-- A willingness to experiment, test, and iterate
+- Basic Python proficiency (functions, classes, async programming).
+- Familiarity with REST APIs.
+- Willingness to experiment and iterate frequently.
 
 ---
 
 ## Tips for Success
 
-- Regularly review each module’s documentation and implementation plans.
-- Use provided tests as validation checkpoints.
-- Engage with external resources and documentation frequently.
-- Don’t hesitate to use AI assistants and peer resources for troubleshooting.
+- Regularly revisit and review module documentation and tutorials.
+- Validate your work at each step with comprehensive tests.
+- Engage actively with external documentation and resources.
+- Utilize AI assistants and community forums for troubleshooting.
 
 ---
 
 ## About the Instructor
 
-**Bradley Ross** is an experienced Agentics Engineer and Technical Lead, pursuing a Master's at Harvard University. Bradley has served as a Teaching Fellow / Course Asssistant for Harvard’s CS50 for ten terms, mentoring thousands of students through the fundamentals and intricacies of software engineering, AI, and web development.
+**Bradley Ross** brings over 20 years of experience as an Agentics Engineer, Programmer, and Data Scientist. He is currently a Master's Student at Harvard University and serves as a Teaching Fellow and Course Assistant for Harvard's renowned CS50 course. Bradley has extensive experience mentoring thousands of students in software engineering, AI development, and innovative technology integration.
 
 ---
 
-## Ready to Start?
+## Let's Get Started!
 
-Begin your journey with **Module 1: Hello World Agent** and progressively build your knowledge and skills. Each module will challenge you and provide opportunities to create increasingly complex and intelligent AI agents.
+Begin your journey today with **Module 1: Hello World Agent**, progressively advancing your skills with each subsequent module. Prepare to dive deep, build intelligent AI agents, and elevate your practical programming capabilities.
 
-Good luck and happy learning!
+Happy learning!
 
-*Instructor: Bradley Ross – Agentics Engineer and Technical Lead, CS50 Teaching Fellow/Course Assistant*
+*Bradley Ross – Instructor & Course Designer*
