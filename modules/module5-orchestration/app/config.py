@@ -16,6 +16,10 @@ REQUESTRY_API_KEY = os.getenv("REQUESTRY_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 API_KEY = os.getenv("API_KEY", "")  # Keep for backward compatibility
 
+# Orchestration-specific configs
+TRACE_LOG_LEVEL = os.getenv("TRACE_LOG_LEVEL", "INFO")
+ORCHESTRATION_MODE = os.getenv("ORCHESTRATION_MODE", "DEVELOPMENT")
+
 # Log warnings for missing keys (but don't raise errors yet)
 # We'll handle missing keys in each provider's implementation
 if not OPENAI_API_KEY:
@@ -28,3 +32,7 @@ if not OPENROUTER_API_KEY:
     logger.warning("OPENROUTER_API_KEY is missing. OpenRouter provider will not work.")
 if not API_KEY:
     logger.warning("API_KEY is missing. Some functionality may be limited.")
+
+# Log orchestration configuration
+logger.info(f"Orchestration mode: {ORCHESTRATION_MODE}")
+logger.info(f"Trace log level: {TRACE_LOG_LEVEL}")
