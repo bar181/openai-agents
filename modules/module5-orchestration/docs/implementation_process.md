@@ -32,7 +32,41 @@ This document tracks the implementation progress of Module 5, which focuses on a
 
 ## Phase 2 Updates
 
-(To be completed in Phase 2)
+- Implemented input guardrails:
+  - Created `validate_empty_input` guardrail to check for empty inputs
+  - Created `validate_input_length` guardrail to check for excessively long inputs
+  - Created `validate_harmful_content` guardrail to check for potentially harmful content
+  - Created `validate_inappropriate_language` guardrail to check for inappropriate language
+  - Used the `@input_guardrail()` decorator from the OpenAI Agents SDK
+
+- Implemented output guardrails:
+  - Created `validate_output_not_empty` guardrail to check for empty outputs
+  - Created `validate_output_length` guardrail to check for excessively long outputs
+  - Created `validate_no_error_in_output` guardrail to check for error messages in outputs
+  - Created `validate_output_format` guardrail to check for correct output format
+  - Used the `@output_guardrail()` decorator from the OpenAI Agents SDK
+
+- Created a guardrail agent:
+  - Implemented `GuardrailAgent` class that uses input and output guardrails
+  - Created a factory function `create_guardrail_agent` for easy agent creation
+  - Configured default guardrails for the agent
+
+- Updated the orchestration router:
+  - Added endpoints for input guardrails
+  - Added endpoints for output guardrails
+  - Added test endpoints for guardrails
+  - Implemented error handling for guardrail tripwires
+
+- Developed comprehensive tests:
+  - Added tests for each input guardrail
+  - Added tests for each output guardrail
+  - Added tests for the guardrail agent
+  - Ensured all tests pass
+
+- Next steps:
+  - Implement agent-to-agent handoffs in Phase 3
+  - Develop handoff mechanisms and criteria
+  - Create specialized agents for different tasks
 
 ## Phase 3 Updates
 
