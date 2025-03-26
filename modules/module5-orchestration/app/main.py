@@ -6,6 +6,9 @@ from app.routers import basic_router
 from app.routers import advanced_router
 from app.routers import llm_router
 from app.routers import orchestration_router
+from app.agents.orchestration.trace_processor import trace_processor
+
+# The trace processor is already registered in the trace_processor.py file
 
 app = FastAPI(title="Module5 - Orchestration", version="1.0.0")
 

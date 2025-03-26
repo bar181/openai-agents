@@ -8,6 +8,7 @@ based on task complexity or specialized requirements.
 import logging
 from typing import List, Dict, Any, Optional, Callable, Union
 from agents import Agent, handoff, RunContextWrapper
+from agents.tracing import get_current_trace
 
 logger = logging.getLogger(__name__)
 
@@ -17,9 +18,20 @@ class SpecializedAgent(Agent):
     
     async def _run(self, message, **kwargs):
         """Run the agent with the given message."""
-        # In a real implementation, this would call the LLM
-        # For now, we'll return a simple response based on the agent's name
-        return f"Response from {self.name}: I'll help with your inquiry about '{message}'."
+        # Get the current trace
+        trace = get_current_trace()
+        
+        # Add a span for this specialized agent run
+        with trace.create_span(f"specialized_agent_{self.name}") as span:
+            span.set_attribute("message", message)
+            span.set_attribute("agent_name", self.name)
+            
+            # In a real implementation, this would call the LLM
+            # For now, we'll return a simple response based on the agent's name
+            response = f"Response from {self.name}: I'll help with your inquiry about '{message}'."
+            
+            span.set_attribute("response", response)
+            return response
 
 # Create specialized agents
 billing_agent = SpecializedAgent(
@@ -48,22 +60,30 @@ def filter_billing_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, An
     Returns:
         Filtered list of messages.
     """
-    # Extract only the most recent user message and any billing-related context
-    filtered = []
+    # Get the current trace
+    trace = get_current_trace()
     
-    # Add system message for context
-    filtered.append({
-        "role": "system",
-        "content": "You are handling a billing-related inquiry. Focus only on billing, payments, invoices, and subscriptions."
-    })
-    
-    # Find the most recent user message
-    for message in reversed(messages):
-        if message.get("role") == "user":
-            filtered.append(message)
-            break
-    
-    return filtered
+    # Add a span for this filter
+    with trace.create_span("filter_billing_messages") as span:
+        span.set_attribute("original_message_count", len(messages))
+        
+        # Extract only the most recent user message and any billing-related context
+        filtered = []
+        
+        # Add system message for context
+        filtered.append({
+            "role": "system",
+            "content": "You are handling a billing-related inquiry. Focus only on billing, payments, invoices, and subscriptions."
+        })
+        
+        # Find the most recent user message
+        for message in reversed(messages):
+            if message.get("role") == "user":
+                filtered.append(message)
+                break
+        
+        span.set_attribute("filtered_message_count", len(filtered))
+        return filtered
 
 def filter_technical_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
@@ -75,22 +95,30 @@ def filter_technical_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, 
     Returns:
         Filtered list of messages.
     """
-    # Extract only the most recent user message and any technical-related context
-    filtered = []
+    # Get the current trace
+    trace = get_current_trace()
     
-    # Add system message for context
-    filtered.append({
-        "role": "system",
-        "content": "You are handling a technical support inquiry. Focus only on technical issues, troubleshooting, and system problems."
-    })
-    
-    # Find the most recent user message
-    for message in reversed(messages):
-        if message.get("role") == "user":
-            filtered.append(message)
-            break
-    
-    return filtered
+    # Add a span for this filter
+    with trace.create_span("filter_technical_messages") as span:
+        span.set_attribute("original_message_count", len(messages))
+        
+        # Extract only the most recent user message and any technical-related context
+        filtered = []
+        
+        # Add system message for context
+        filtered.append({
+            "role": "system",
+            "content": "You are handling a technical support inquiry. Focus only on technical issues, troubleshooting, and system problems."
+        })
+        
+        # Find the most recent user message
+        for message in reversed(messages):
+            if message.get("role") == "user":
+                filtered.append(message)
+                break
+        
+        span.set_attribute("filtered_message_count", len(filtered))
+        return filtered
 
 def filter_customer_service_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
@@ -102,22 +130,30 @@ def filter_customer_service_messages(messages: List[Dict[str, Any]]) -> List[Dic
     Returns:
         Filtered list of messages.
     """
-    # Extract only the most recent user message and any customer service-related context
-    filtered = []
+    # Get the current trace
+    trace = get_current_trace()
     
-    # Add system message for context
-    filtered.append({
-        "role": "system",
-        "content": "You are handling a general customer service inquiry. Focus on providing helpful, friendly assistance."
-    })
-    
-    # Find the most recent user message
-    for message in reversed(messages):
-        if message.get("role") == "user":
-            filtered.append(message)
-            break
-    
-    return filtered
+    # Add a span for this filter
+    with trace.create_span("filter_customer_service_messages") as span:
+        span.set_attribute("original_message_count", len(messages))
+        
+        # Extract only the most recent user message and any customer service-related context
+        filtered = []
+        
+        # Add system message for context
+        filtered.append({
+            "role": "system",
+            "content": "You are handling a general customer service inquiry. Focus on providing helpful, friendly assistance."
+        })
+        
+        # Find the most recent user message
+        for message in reversed(messages):
+            if message.get("role") == "user":
+                filtered.append(message)
+                break
+        
+        span.set_attribute("filtered_message_count", len(filtered))
+        return filtered
 
 # Create handoff instances with message filters
 billing_handoff = handoff(
@@ -184,15 +220,25 @@ class HandoffAgent(Agent):
         Returns:
             The type of agent to handle the message: "billing", "technical", or "customer_service".
         """
-        # Simple keyword-based routing for demonstration
-        message_lower = message.lower()
+        # Get the current trace
+        trace = get_current_trace()
         
-        if any(word in message_lower for word in ["bill", "payment", "invoice", "charge", "subscription", "refund", "price"]):
-            return "billing"
-        elif any(word in message_lower for word in ["error", "bug", "crash", "not working", "broken", "fix", "problem", "technical"]):
-            return "technical"
-        else:
-            return "customer_service"
+        # Add a span for agent type determination
+        with trace.create_span("determine_agent_type") as span:
+            span.set_attribute("message", message)
+            
+            # Simple keyword-based routing for demonstration
+            message_lower = message.lower()
+            
+            if any(word in message_lower for word in ["bill", "payment", "invoice", "charge", "subscription", "refund", "price"]):
+                agent_type = "billing"
+            elif any(word in message_lower for word in ["error", "bug", "crash", "not working", "broken", "fix", "problem", "technical"]):
+                agent_type = "technical"
+            else:
+                agent_type = "customer_service"
+            
+            span.set_attribute("determined_agent_type", agent_type)
+            return agent_type
     
     async def process_with_specialized_agent(self, message: str, agent_type: str) -> Dict[str, Any]:
         """
@@ -205,30 +251,50 @@ class HandoffAgent(Agent):
         Returns:
             The agent's response.
         """
-        try:
-            agent = self.specialized_agents.get(agent_type)
-            if not agent:
+        # Get the current trace
+        trace = get_current_trace()
+        
+        # Add a span for processing with specialized agent
+        with trace.create_span("process_with_specialized_agent") as span:
+            span.set_attribute("message", message)
+            span.set_attribute("agent_type", agent_type)
+            
+            try:
+                agent = self.specialized_agents.get(agent_type)
+                if not agent:
+                    error_message = f"Unknown agent type: {agent_type}"
+                    span.set_attribute("error", error_message)
+                    span.set_attribute("status", "error")
+                    
+                    return {
+                        "status": "error",
+                        "message": error_message,
+                        "agent_type": "unknown"
+                    }
+                
+                # Process with the specialized agent
+                response = await agent.run(message)
+                
+                span.set_attribute("status", "success")
+                span.set_attribute("response", response)
+                
+                return {
+                    "status": "success",
+                    "message": response,
+                    "agent_type": agent_type
+                }
+            except Exception as e:
+                error_message = f"Error processing with specialized agent: {str(e)}"
+                span.set_attribute("error", error_message)
+                span.set_attribute("status", "error")
+                span.set_attribute("exception", str(e))
+                
+                logger.error(error_message)
                 return {
                     "status": "error",
-                    "message": f"Unknown agent type: {agent_type}",
-                    "agent_type": "unknown"
+                    "message": error_message,
+                    "agent_type": agent_type
                 }
-            
-            # Process with the specialized agent
-            response = await agent.run(message)
-            
-            return {
-                "status": "success",
-                "message": response,
-                "agent_type": agent_type
-            }
-        except Exception as e:
-            logger.error(f"Error processing with specialized agent: {str(e)}")
-            return {
-                "status": "error",
-                "message": f"Error processing with specialized agent: {str(e)}",
-                "agent_type": agent_type
-            }
 
 def create_handoff_agent(**kwargs) -> HandoffAgent:
     """

@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from typing import Dict, Any, Optional, List
 from agents.guardrail import InputGuardrailResult, OutputGuardrailResult
 from app.agents.orchestration.guardrail_agent import create_guardrail_agent
+from app.agents.orchestration.trace_processor import trace_processor, format_trace_for_display
 
 logger = logging.getLogger(__name__)
 
@@ -52,11 +53,14 @@ async def input_guardrails_endpoint(request: OrchestrationRequest):
         # Run the agent with the input guardrails
         response = await agent.run(request.message)
         
+        # Get the trace ID from the current trace
+        trace_id = f"trace-{id(agent)}"
+        
         return GuardrailResponse(
             status="success",
             response=response,
             guardrail_triggered=False,
-            trace_id=f"trace-{id(agent)}"
+            trace_id=trace_id
         )
     except Exception as e:
         logger.error(f"Input guardrail triggered: {str(e)}")
@@ -91,11 +95,14 @@ async def output_guardrails_endpoint(request: OrchestrationRequest):
         # Run the agent to get a response
         response = await agent.run(request.message)
         
+        # Get the trace ID from the current trace
+        trace_id = f"trace-{id(agent)}"
+        
         return GuardrailResponse(
             status="success",
             response=response,
             guardrail_triggered=False,
-            trace_id=f"trace-{id(agent)}"
+            trace_id=trace_id
         )
     except Exception as e:
         logger.error(f"Output guardrail triggered: {str(e)}")
@@ -145,11 +152,14 @@ async def test_input_guardrail_endpoint(request: OrchestrationRequest):
         # Run the agent with the input guardrails
         response = await agent.run(request.message)
         
+        # Get the trace ID from the current trace
+        trace_id = f"trace-{id(agent)}"
+        
         return GuardrailResponse(
             status="success",
             response="Input passed all guardrails",
             guardrail_triggered=False,
-            trace_id=f"trace-{id(agent)}"
+            trace_id=trace_id
         )
     except Exception as e:
         logger.error(f"Input guardrail triggered during test: {str(e)}")
@@ -207,7 +217,7 @@ async def test_output_guardrail_endpoint(request: OrchestrationRequest):
                 results.append({
                     "guardrail": guardrail.__name__,
                     "triggered": True,
-                    "message": result.message
+                    "message": result.output_info
                 })
             else:
                 results.append({
@@ -318,18 +328,69 @@ async def handoffs_triage_endpoint(request: OrchestrationRequest):
             "message": f"Error triaging request: {str(e)}"
         }
 
+# New trace-related endpoints
+
+@router.get("/traces")
+async def get_all_traces():
+    """
+    Get all traces.
+    
+    Returns:
+        A list of all traces.
+    """
+    return trace_processor.get_all_traces()
+
+@router.get("/traces/{trace_id}")
+async def get_trace(trace_id: str):
+    """
+    Get a trace by its ID.
+    
+    Args:
+        trace_id: The ID of the trace to get.
+        
+    Returns:
+        The trace, or a 404 error if not found.
+    """
+    trace = trace_processor.get_trace(trace_id)
+    if not trace:
+        raise HTTPException(status_code=404, detail=f"Trace {trace_id} not found")
+    return trace
+
+@router.get("/traces/{trace_id}/formatted")
+async def get_formatted_trace(trace_id: str):
+    """
+    Get a formatted trace by its ID.
+    
+    Args:
+        trace_id: The ID of the trace to get.
+        
+    Returns:
+        The formatted trace, or a 404 error if not found.
+    """
+    trace = trace_processor.get_trace(trace_id)
+    if not trace:
+        raise HTTPException(status_code=404, detail=f"Trace {trace_id} not found")
+    
+    formatted_trace = format_trace_for_display(trace)
+    return {"formatted_trace": formatted_trace}
+
+@router.delete("/traces")
+async def clear_traces():
+    """
+    Clear all traces.
+    
+    Returns:
+        A success message.
+    """
+    trace_processor.clear_traces()
+    return {"status": "success", "message": "All traces cleared"}
+
 @router.get("/trace-status")
 async def trace_status_endpoint():
     """
     Endpoint for checking trace status.
     
     Returns:
-        A guardrail response.
+        A summary of all traces.
     """
-    # Placeholder implementation
-    return GuardrailResponse(
-        status="success",
-        response="Trace status placeholder",
-        guardrail_triggered=False,
-        trace_id="trace-placeholder-abc"
-    )
+    return trace_processor.get_trace_summary()
