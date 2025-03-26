@@ -8,7 +8,7 @@ It supports multiple models and returns standardized responses.
 import os
 import logging
 import openai
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 
 # Configure logging
@@ -21,6 +21,12 @@ class OpenAIAgent:
         """Initialize the OpenAI agent with API key from environment."""
         self.api_key = os.getenv("OPENAI_API_KEY", "")
         self.default_model = "gpt-4o-mini"
+        self.provider_name = "openai"  # Add provider_name attribute
+        
+        # Raise ValueError if API key is missing
+        if not self.api_key:
+            raise ValueError("OPENAI_API_KEY is missing in environment")
+            
         logger.info(f"OpenAI agent initialized with default model: {self.default_model}")
     
     def process_prompt(self, prompt_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -30,6 +36,7 @@ class OpenAIAgent:
         Args:
             prompt_data: Dictionary containing:
                 - prompt (str): The user's text prompt
+                - system_message (str, optional): System message for the conversation
                 - model (str, optional): Model name (default: gpt-4o-mini)
                 - max_tokens (int, optional): Maximum tokens to generate
                 - temperature (float, optional): Sampling temperature
@@ -37,21 +44,14 @@ class OpenAIAgent:
         Returns:
             Dictionary with:
                 - status (str): "success" or "error"
-                - message (str): Response text or error message
+                - response (str): Response text (for success)
+                - error (str): Error message (for error)
                 - model (str): Model used for generation
                 - usage (dict, optional): Token usage statistics
         """
-        # Check for API key
-        if not self.api_key:
-            logger.error("OPENAI_API_KEY is missing in environment")
-            return {
-                "status": "error",
-                "message": "OPENAI_API_KEY missing in environment.",
-                "model": "unknown"
-            }
-        
         # Extract parameters from prompt_data
         prompt = prompt_data.get("prompt", "")
+        system_message = prompt_data.get("system_message", None)
         model_name = prompt_data.get("model", self.default_model)
         max_tokens = prompt_data.get("max_tokens", 100)
         temperature = prompt_data.get("temperature", 0.7)
@@ -62,10 +62,16 @@ class OpenAIAgent:
             # Create OpenAI client
             client = openai.OpenAI(api_key=self.api_key)
             
+            # Prepare messages
+            messages = []
+            if system_message:
+                messages.append({"role": "system", "content": system_message})
+            messages.append({"role": "user", "content": prompt})
+            
             # Call OpenAI API
             response = client.chat.completions.create(
                 model=model_name,
-                messages=[{"role": "user", "content": prompt}],
+                messages=messages,
                 max_tokens=max_tokens,
                 temperature=temperature
             )
@@ -84,7 +90,7 @@ class OpenAIAgent:
             
             return {
                 "status": "success",
-                "message": completion_text,
+                "response": completion_text,  # Change from "message" to "response"
                 "model": model_name,
                 "usage": usage
             }
@@ -105,6 +111,6 @@ class OpenAIAgent:
             
             return {
                 "status": "error",
-                "message": f"{error_type}: {str(e)}",
+                "error": f"{error_type}: {str(e)}",  # Change from "message" to "error"
                 "model": model_name
             }
