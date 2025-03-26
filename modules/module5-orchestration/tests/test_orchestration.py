@@ -40,6 +40,41 @@ from app.agents.orchestration.handoff_agent import (
     filter_customer_service_messages
 )
 
+# Create a mock trace for testing
+class MockTrace:
+    def __init__(self):
+        self.trace_id = "mock-trace-id"
+        self.start_time = 1000.0
+        self.end_time = 1001.0
+        self.spans = []
+        self.metadata = {}
+    
+    def create_span(self, name):
+        span = MockSpan(name)
+        self.spans.append(span)
+        return span
+
+class MockSpan:
+    def __init__(self, name):
+        self.span_id = f"span-{name}"
+        self.parent_id = None
+        self.name = name
+        self.start_time = 1000.0
+        self.end_time = 1001.0
+        self.attributes = {}
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+    
+    def set_attribute(self, key, value):
+        self.attributes[key] = value
+
+# Mock the get_current_trace function
+mock_trace = MockTrace()
+
 # Mock RunContextWrapper for testing
 class MockRunContext:
     def __init__(self):
@@ -56,7 +91,8 @@ async def test_handoff_agent_creation():
     assert hasattr(agent, "specialized_agents"), "Handoff agent should have specialized agents"
 
 @pytest.mark.asyncio
-async def test_determine_agent_type():
+@patch('app.agents.orchestration.handoff_agent.get_current_trace', return_value=mock_trace)
+async def test_determine_agent_type(mock_get_trace):
     """Test that the handoff agent can determine the correct agent type."""
     agent = create_handoff_agent()
     
@@ -76,7 +112,8 @@ async def test_determine_agent_type():
     assert agent_type == "customer_service", "Should route general questions to customer service agent"
 
 @pytest.mark.asyncio
-async def test_process_with_specialized_agent():
+@patch('app.agents.orchestration.handoff_agent.get_current_trace', return_value=mock_trace)
+async def test_process_with_specialized_agent(mock_get_trace):
     """Test that the handoff agent can process messages with specialized agents."""
     agent = create_handoff_agent()
     
@@ -102,7 +139,8 @@ async def test_process_with_specialized_agent():
     assert "Unknown agent type" in unknown_result["message"], "Should indicate unknown agent type error"
 
 @pytest.mark.asyncio
-async def test_message_filters():
+@patch('app.agents.orchestration.handoff_agent.get_current_trace', return_value=mock_trace)
+async def test_message_filters(mock_get_trace):
     """Test that message filters correctly filter messages."""
     # Create test messages
     messages = [
@@ -131,7 +169,8 @@ async def test_message_filters():
 
 # Tests for input guardrails
 @pytest.mark.asyncio
-async def test_input_guardrail_empty_input():
+@patch('app.agents.orchestration.input_guardrails.get_current_trace', return_value=mock_trace)
+async def test_input_guardrail_empty_input(mock_get_trace):
     """Test that the empty input guardrail triggers for empty input."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -146,7 +185,8 @@ async def test_input_guardrail_empty_input():
     assert not result.output.tripwire_triggered, "Empty input guardrail should not trigger for non-empty input"
 
 @pytest.mark.asyncio
-async def test_input_guardrail_input_length():
+@patch('app.agents.orchestration.input_guardrails.get_current_trace', return_value=mock_trace)
+async def test_input_guardrail_input_length(mock_get_trace):
     """Test that the input length guardrail triggers for long input."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -163,7 +203,8 @@ async def test_input_guardrail_input_length():
     assert not result.output.tripwire_triggered, "Input length guardrail should not trigger for valid input"
 
 @pytest.mark.asyncio
-async def test_input_guardrail_harmful_content():
+@patch('app.agents.orchestration.input_guardrails.get_current_trace', return_value=mock_trace)
+async def test_input_guardrail_harmful_content(mock_get_trace):
     """Test that the harmful content guardrail triggers for harmful input."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -180,7 +221,8 @@ async def test_input_guardrail_harmful_content():
     assert not result.output.tripwire_triggered, "Harmful content guardrail should not trigger for safe input"
 
 @pytest.mark.asyncio
-async def test_input_guardrail_inappropriate_language():
+@patch('app.agents.orchestration.input_guardrails.get_current_trace', return_value=mock_trace)
+async def test_input_guardrail_inappropriate_language(mock_get_trace):
     """Test that the inappropriate language guardrail triggers for inappropriate language."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -198,7 +240,8 @@ async def test_input_guardrail_inappropriate_language():
 
 # Tests for output guardrails
 @pytest.mark.asyncio
-async def test_output_guardrail_empty_output():
+@patch('app.agents.orchestration.output_guardrails.get_current_trace', return_value=mock_trace)
+async def test_output_guardrail_empty_output(mock_get_trace):
     """Test that the empty output guardrail triggers for empty output."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -213,7 +256,8 @@ async def test_output_guardrail_empty_output():
     assert not result.output.tripwire_triggered, "Empty output guardrail should not trigger for non-empty output"
 
 @pytest.mark.asyncio
-async def test_output_guardrail_output_length():
+@patch('app.agents.orchestration.output_guardrails.get_current_trace', return_value=mock_trace)
+async def test_output_guardrail_output_length(mock_get_trace):
     """Test that the output length guardrail triggers for long output."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -230,7 +274,8 @@ async def test_output_guardrail_output_length():
     assert not result.output.tripwire_triggered, "Output length guardrail should not trigger for valid output"
 
 @pytest.mark.asyncio
-async def test_output_guardrail_error_in_output():
+@patch('app.agents.orchestration.output_guardrails.get_current_trace', return_value=mock_trace)
+async def test_output_guardrail_error_in_output(mock_get_trace):
     """Test that the error in output guardrail triggers for output with errors."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()
@@ -252,7 +297,8 @@ async def test_output_guardrail_error_in_output():
     assert not result.output.tripwire_triggered, "Error in output guardrail should not trigger for valid output"
 
 @pytest.mark.asyncio
-async def test_output_guardrail_output_format():
+@patch('app.agents.orchestration.output_guardrails.get_current_trace', return_value=mock_trace)
+async def test_output_guardrail_output_format(mock_get_trace):
     """Test that the output format guardrail triggers for output with incorrect format."""
     agent = Agent(name="TestAgent")
     context = MockRunContext()

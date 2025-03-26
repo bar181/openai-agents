@@ -145,18 +145,90 @@ Tracing provides visibility into agent interactions, making debugging and monito
 
 1. **Trace Processor:**
    - Create `trace_processor.py` to capture and process trace information
-   - Implement tracing for guardrails and handoffs
-   - Capture detailed information about agent interactions
+   - Implement the `OrchestrationTraceProcessor` class to store and manage traces
+   - Register the trace processor with the agents library using `add_trace_processor()`
+   - Implement methods to retrieve, format, and clear traces
+   - Add a `shutdown` method for proper cleanup during application shutdown
 
-2. **Trace Visualization:**
-   - Implement methods to visualize agent interaction traces
-   - Create a clear representation of handoff flows
-   - Enable debugging of complex agent interactions
+2. **Trace Integration:**
+   - Enhance input guardrails with tracing:
+     - Add spans for each validation step
+     - Record input details and validation results
+     - Capture tripwire triggers and reasons
+   - Enhance output guardrails with tracing:
+     - Add spans for each validation step
+     - Record output details and validation results
+     - Capture error conditions and format issues
+   - Enhance handoff agent with tracing:
+     - Add spans for agent type determination
+     - Add spans for specialized agent processing
+     - Record message filtering operations
+     - Capture handoff decisions and results
 
-3. **Router Integration:**
-   - Add endpoints for retrieving trace information
-   - Implement trace status checking
-   - Enable trace filtering and searching
+3. **Trace Visualization:**
+   - Implement `format_trace_for_display` function to format traces in a hierarchical format
+   - Create helper functions to format spans and their attributes
+   - Ensure proper indentation for nested spans
+   - Add detailed timing information for performance analysis
+
+4. **Router Integration:**
+   - Add `/traces` endpoint to retrieve all traces
+   - Add `/traces/{trace_id}` endpoint to retrieve a specific trace
+   - Add `/traces/{trace_id}/formatted` endpoint to get a formatted trace
+   - Add `/traces/clear` endpoint to clear all traces
+   - Enhance `/trace-status` endpoint to provide trace summary information
+
+5. **Testing:**
+   - Create mock trace and span classes for testing
+   - Use patching to inject mock traces during tests
+   - Manually process traces in test scenarios
+   - Verify trace capture, formatting, and retrieval
+
+### Example: Adding Tracing to a Guardrail
+
+```python
+@input_guardrail()
+async def validate_empty_input(context: RunContextWrapper, agent: Agent, user_input: str) -> GuardrailFunctionOutput:
+    """Validate that the user input is not empty."""
+    logger.info(f"Validating input is not empty: {user_input[:50]}...")
+    
+    # Get the current trace
+    trace = get_current_trace()
+    
+    # Add a span for this guardrail
+    with trace.create_span("validate_empty_input") as span:
+        span.set_attribute("input_length", len(user_input))
+        
+        if not user_input or len(user_input.strip()) == 0:
+            logger.warning("Input is empty")
+            span.set_attribute("tripwire_triggered", True)
+            span.set_attribute("reason", "Input cannot be empty")
+            
+            return GuardrailFunctionOutput(
+                output_info="Input cannot be empty.",
+                tripwire_triggered=True
+            )
+        
+        span.set_attribute("tripwire_triggered", False)
+        return GuardrailFunctionOutput(
+            output_info=None,
+            tripwire_triggered=False
+        )
+```
+
+### Example: Retrieving and Formatting Traces
+
+```python
+# Get all traces
+traces = trace_processor.get_all_traces()
+
+# Get a specific trace
+trace = trace_processor.get_trace(trace_id)
+
+# Format a trace for display
+formatted_trace = format_trace_for_display(trace)
+print(formatted_trace)
+```
 
 ---
 
