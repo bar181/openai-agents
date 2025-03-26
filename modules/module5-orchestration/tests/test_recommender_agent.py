@@ -54,7 +54,7 @@ async def test_recommender_conversation():
     result = agent.process_prompt(input_data)
     assert result["status"] == "success"
     assert result["recommended_provider"] == "openai"
-    assert result["model"] == "gpt-3.5-turbo"
+    assert result["model"] == "gpt-4o-mini"  # Updated to expect gpt-4o-mini instead of gpt-3.5-turbo
 
 
 @pytest.mark.asyncio

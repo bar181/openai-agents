@@ -26,6 +26,27 @@ class OrchestrationTraceProcessor:
         self.log_level = log_level
         self.traces: Dict[str, Dict[str, Any]] = {}
         logger.info(f"Initialized OrchestrationTraceProcessor with log level: {log_level}")
+    
+    def on_trace_start(self, trace):
+        """Called when a trace starts."""
+        logger.info(f"Trace started: {trace.trace_id}")
+    
+    def on_trace_end(self, trace):
+        """Called when a trace ends."""
+        logger.info(f"Trace ended: {trace.trace_id}")
+        self.process_trace(trace)
+    
+    def on_span_start(self, span):
+        """Called when a span starts."""
+        # Use span_id instead of name for SpanImpl objects
+        span_id = getattr(span, "span_id", "unknown")
+        logger.info(f"Span started: {span_id}")
+    
+    def on_span_end(self, span):
+        """Called when a span ends."""
+        # Use span_id instead of name for SpanImpl objects
+        span_id = getattr(span, "span_id", "unknown")
+        logger.info(f"Span ended: {span_id}")
         
     def process_trace(self, trace):
         """
@@ -36,14 +57,20 @@ class OrchestrationTraceProcessor:
         """
         trace_id = trace.trace_id
         
+        # Get attributes safely with getattr to handle different trace implementations
+        start_time = getattr(trace, "start_time", time.time())
+        end_time = getattr(trace, "end_time", time.time())
+        spans = getattr(trace, "spans", [])
+        metadata = getattr(trace, "metadata", {})
+        
         # Store the trace
         self.traces[trace_id] = {
             "trace_id": trace_id,
-            "start_time": trace.start_time,
-            "end_time": trace.end_time,
-            "duration_ms": (trace.end_time - trace.start_time) * 1000,
-            "spans": [self._process_span(span) for span in trace.spans],
-            "metadata": trace.metadata
+            "start_time": start_time,
+            "end_time": end_time,
+            "duration_ms": (end_time - start_time) * 1000,
+            "spans": [self._process_span(span) for span in spans],
+            "metadata": metadata
         }
         
         # Log the trace
@@ -62,14 +89,22 @@ class OrchestrationTraceProcessor:
         Returns:
             A dictionary representation of the span.
         """
+        # Get attributes safely with getattr to handle different span implementations
+        span_id = getattr(span, "span_id", "unknown")
+        parent_id = getattr(span, "parent_id", None)
+        name = getattr(span, "name", "unknown")
+        start_time = getattr(span, "start_time", time.time())
+        end_time = getattr(span, "end_time", time.time())
+        attributes = getattr(span, "attributes", {})
+        
         return {
-            "span_id": span.span_id,
-            "parent_id": span.parent_id,
-            "name": span.name,
-            "start_time": span.start_time,
-            "end_time": span.end_time,
-            "duration_ms": (span.end_time - span.start_time) * 1000,
-            "attributes": span.attributes
+            "span_id": span_id,
+            "parent_id": parent_id,
+            "name": name,
+            "start_time": start_time,
+            "end_time": end_time,
+            "duration_ms": (end_time - start_time) * 1000,
+            "attributes": attributes
         }
     
     def get_trace(self, trace_id: str) -> Optional[Dict[str, Any]]:
