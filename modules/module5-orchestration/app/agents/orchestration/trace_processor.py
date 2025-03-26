@@ -117,6 +117,16 @@ class OrchestrationTraceProcessor:
             "avg_duration_ms": avg_duration,
             "trace_ids": list(self.traces.keys())
         }
+    
+    def shutdown(self) -> None:
+        """
+        Shutdown the trace processor.
+        
+        This method is called when the application is shutting down.
+        It performs any necessary cleanup operations.
+        """
+        logger.info("Shutting down OrchestrationTraceProcessor")
+        self.clear_traces()
 
 # Create a singleton instance of the trace processor
 trace_processor = OrchestrationTraceProcessor()
