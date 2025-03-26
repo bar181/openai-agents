@@ -244,13 +244,79 @@ async def handoffs_endpoint(request: OrchestrationRequest):
     Returns:
         A guardrail response.
     """
-    # Placeholder implementation
-    return GuardrailResponse(
-        status="success",
-        response="Handoffs placeholder",
-        guardrail_triggered=False,
-        trace_id=f"trace-placeholder-{id(request)}"
-    )
+    logger.info(f"Processing handoff request: {request.message[:50]}...")
+    
+    try:
+        # Import the handoff agent
+        from app.agents.orchestration.handoff_agent import create_handoff_agent
+        
+        # Create a handoff agent
+        agent = create_handoff_agent()
+        
+        # Determine the agent type based on the message
+        agent_type = await agent.determine_agent_type(request.message)
+        logger.info(f"Determined agent type: {agent_type}")
+        
+        # Process the message with the specialized agent
+        result = await agent.process_with_specialized_agent(request.message, agent_type)
+        
+        if result["status"] == "error":
+            return GuardrailResponse(
+                status="error",
+                response=result["message"],
+                guardrail_triggered=False,
+                trace_id=f"trace-handoff-error-{id(request)}"
+            )
+        
+        return GuardrailResponse(
+            status="success",
+            response=result["message"],
+            guardrail_triggered=False,
+            trace_id=f"trace-handoff-{agent_type}-{id(request)}"
+        )
+    except Exception as e:
+        logger.error(f"Error in handoff endpoint: {str(e)}")
+        return GuardrailResponse(
+            status="error",
+            response=f"Error processing handoff: {str(e)}",
+            guardrail_triggered=False,
+            trace_id=f"trace-handoff-error-{id(request)}"
+        )
+
+@router.post("/handoffs/triage")
+async def handoffs_triage_endpoint(request: OrchestrationRequest):
+    """
+    Endpoint for triaging a request to determine which specialized agent should handle it.
+    
+    Args:
+        request: The orchestration request.
+        
+    Returns:
+        A response with the determined agent type.
+    """
+    logger.info(f"Triaging request: {request.message[:50]}...")
+    
+    try:
+        # Import the handoff agent
+        from app.agents.orchestration.handoff_agent import create_handoff_agent
+        
+        # Create a handoff agent
+        agent = create_handoff_agent()
+        
+        # Determine the agent type based on the message
+        agent_type = await agent.determine_agent_type(request.message)
+        
+        return {
+            "status": "success",
+            "agent_type": agent_type,
+            "message": f"Request should be handled by the {agent_type.replace('_', ' ').title()} Agent."
+        }
+    except Exception as e:
+        logger.error(f"Error in triage endpoint: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Error triaging request: {str(e)}"
+        }
 
 @router.get("/trace-status")
 async def trace_status_endpoint():

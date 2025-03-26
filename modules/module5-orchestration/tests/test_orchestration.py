@@ -31,10 +31,103 @@ from app.agents.orchestration.output_guardrails import (
 )
 from app.agents.orchestration.guardrail_agent import create_guardrail_agent
 
+# Import handoff agent
+from app.agents.orchestration.handoff_agent import (
+    create_handoff_agent,
+    HandoffAgent,
+    filter_billing_messages,
+    filter_technical_messages,
+    filter_customer_service_messages
+)
+
 # Mock RunContextWrapper for testing
 class MockRunContext:
     def __init__(self):
         pass
+
+# Tests for handoff agent
+@pytest.mark.asyncio
+async def test_handoff_agent_creation():
+    """Test that the handoff agent can be created."""
+    agent = create_handoff_agent()
+    assert agent is not None, "Handoff agent should be created successfully"
+    assert isinstance(agent, HandoffAgent), "Agent should be an instance of HandoffAgent"
+    assert len(agent.handoffs) > 0, "Handoff agent should have handoffs configured"
+    assert hasattr(agent, "specialized_agents"), "Handoff agent should have specialized agents"
+
+@pytest.mark.asyncio
+async def test_determine_agent_type():
+    """Test that the handoff agent can determine the correct agent type."""
+    agent = create_handoff_agent()
+    
+    # Test billing agent determination
+    billing_message = "I have a question about my invoice from last month."
+    agent_type = await agent.determine_agent_type(billing_message)
+    assert agent_type == "billing", "Should route billing questions to billing agent"
+    
+    # Test technical support agent determination
+    technical_message = "My application is crashing with an error message."
+    agent_type = await agent.determine_agent_type(technical_message)
+    assert agent_type == "technical", "Should route technical questions to technical support agent"
+    
+    # Test customer service agent determination (default)
+    customer_message = "I'd like to know more about your services."
+    agent_type = await agent.determine_agent_type(customer_message)
+    assert agent_type == "customer_service", "Should route general questions to customer service agent"
+
+@pytest.mark.asyncio
+async def test_process_with_specialized_agent():
+    """Test that the handoff agent can process messages with specialized agents."""
+    agent = create_handoff_agent()
+    
+    # Mock the specialized agents' run method
+    for agent_type, specialized_agent in agent.specialized_agents.items():
+        specialized_agent.run = AsyncMock(return_value=f"Response from {agent_type} agent")
+    
+    # Test processing with billing agent
+    billing_result = await agent.process_with_specialized_agent("Billing question", "billing")
+    assert billing_result["status"] == "success", "Should return success status"
+    assert billing_result["message"] == "Response from billing agent", "Should return billing agent response"
+    assert billing_result["agent_type"] == "billing", "Should indicate billing agent type"
+    
+    # Test processing with technical agent
+    technical_result = await agent.process_with_specialized_agent("Technical question", "technical")
+    assert technical_result["status"] == "success", "Should return success status"
+    assert technical_result["message"] == "Response from technical agent", "Should return technical agent response"
+    assert technical_result["agent_type"] == "technical", "Should indicate technical agent type"
+    
+    # Test processing with unknown agent type
+    unknown_result = await agent.process_with_specialized_agent("Question", "unknown")
+    assert unknown_result["status"] == "error", "Should return error status for unknown agent type"
+    assert "Unknown agent type" in unknown_result["message"], "Should indicate unknown agent type error"
+
+@pytest.mark.asyncio
+async def test_message_filters():
+    """Test that message filters correctly filter messages."""
+    # Create test messages
+    messages = [
+        {"role": "system", "content": "System message"},
+        {"role": "user", "content": "User question about billing"},
+        {"role": "assistant", "content": "Assistant response"}
+    ]
+    
+    # Test billing filter
+    billing_filtered = filter_billing_messages(messages)
+    assert len(billing_filtered) == 2, "Should include system message and user message"
+    assert any(msg["role"] == "system" and "billing" in msg["content"].lower() for msg in billing_filtered), "Should include billing context in system message"
+    assert any(msg["role"] == "user" for msg in billing_filtered), "Should include user message"
+    
+    # Test technical filter
+    technical_filtered = filter_technical_messages(messages)
+    assert len(technical_filtered) == 2, "Should include system message and user message"
+    assert any(msg["role"] == "system" and "technical" in msg["content"].lower() for msg in technical_filtered), "Should include technical context in system message"
+    assert any(msg["role"] == "user" for msg in technical_filtered), "Should include user message"
+    
+    # Test customer service filter
+    customer_filtered = filter_customer_service_messages(messages)
+    assert len(customer_filtered) == 2, "Should include system message and user message"
+    assert any(msg["role"] == "system" and "customer service" in msg["content"].lower() for msg in customer_filtered), "Should include customer service context in system message"
+    assert any(msg["role"] == "user" for msg in customer_filtered), "Should include user message"
 
 # Tests for input guardrails
 @pytest.mark.asyncio
