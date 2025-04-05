@@ -1,35 +1,20 @@
-from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import Any, Optional
 
-
-class ToolResult(BaseModel):
-    """Base class for tool execution results."""
+@dataclass
+class ToolResult:
     success: bool
-    data: Optional[Any] = None
+    data: Any = None
     error: Optional[str] = None
 
-
-class BaseTool(ABC):
-    """Abstract base class for all advanced tools."""
-    
-    @abstractmethod
+class BaseTool:
     def execute(self, **kwargs) -> ToolResult:
-        """Executes the tool's primary function."""
-        pass
-    
-    @abstractmethod
+        raise NotImplementedError("Subclasses must implement this method")
+
     def validate_input(self, **kwargs) -> bool:
-        """Validates input parameters."""
-        pass
-    
+        # Default validation always returns True.
+        return True
+
     @property
-    @abstractmethod
     def description(self) -> str:
-        """Returns tool description for agent."""
-        pass
-    
-    @property
-    def name(self) -> str:
-        """Returns the name of the tool."""
-        return self.__class__.__name__
+        raise NotImplementedError("Subclasses must implement this property")
