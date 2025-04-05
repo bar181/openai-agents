@@ -1,25 +1,29 @@
-from agents import function_tool
-from typing import Any, List
+"""
+Data Tools Module
 
-@function_tool
-def get_item(items: List[Any], index: int) -> Any:
-    """Get an item from a list by index."""
-    try:
+Provides simple data operations.
+"""
+
+class GetItemTool:
+    @staticmethod
+    def function(*, items: list, index: int) -> str:
         return items[index]
-    except IndexError:
-        return None
 
+class SummarizeListTool:
+    @staticmethod
+    def function(*, items: list) -> dict:
+        count = len(items)
+        minimum = min(items) if items else None
+        maximum = max(items) if items else None
+        average = sum(items) / count if count > 0 else None
+        return {"count": count, "min": minimum, "max": maximum, "average": average}
 
-@function_tool
-def summarize_list(items: List[Any]) -> dict:
-    """Return a summary of a list including length and first item."""
-    return {
-        "length": len(items),
-        "first_item": items[0] if items else None
-    }
+class FetchMockDataTool:
+    @staticmethod
+    def function(*, source: str) -> str:
+        return f"sample data from {source}"
 
-
-@function_tool
-def fetch_mock_data(source: str) -> dict:
-    """Retrieve MOCK data from an INTERNAL simulated database."""
-    return {"source": source, "data": "sample data"}
+# Expose tool instances.
+get_item = GetItemTool()
+summarize_list = SummarizeListTool()
+fetch_mock_data = FetchMockDataTool()
