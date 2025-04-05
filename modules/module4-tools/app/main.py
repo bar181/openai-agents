@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.routers import (
     hello_world, story_router, basic_router, streaming_router,
     math_router, string_router, datetime_router, echo_router, multi_tool_router,
-    additional_tools_router, visualization_router
+    additional_tools_router, visualization_router, financial_summary_router
 )
 
 app = FastAPI(title="Module4 - Tools", version="1.0.0")
@@ -22,6 +22,7 @@ app.include_router(echo_router.router, prefix="/tools/echo")
 app.include_router(multi_tool_router.router, prefix="/tools/multi-tool")
 app.include_router(additional_tools_router.router, prefix="/tools/additional")
 app.include_router(visualization_router.router, prefix="/tools/visualization")
+app.include_router(financial_summary_router.router, prefix="/agents/financial-summary")
 
 @app.get("/")
 async def root():
