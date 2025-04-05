@@ -1,20 +1,33 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
+from typing import List, Any
 import json
-import anyio
 from app.dependencies import verify_api_key
 from app.tools.math_tools import add, multiply
 from app.tools.string_tools import to_uppercase, concatenate
 from app.tools.datetime_tools import current_time, add_days
 from app.tools.echo_tools import echo
+from app.tools.data_tools import get_item, summarize_list, fetch_mock_data
+from app.tools.json_tools import validate_json, transform_json
+from app.tools.csv_tools import parse_csv, generate_csv
+from app.tools.analysis_tools import (
+    analyze_sentiment, extract_entities, extract_keywords,
+    calculate_basic_stats, perform_correlation, find_patterns, apply_regex
+)
+from app.tools.api_tools import make_request, cache_get, cache_set, check_rate_limit
 from app.agents.advanced.multi_tool_agent import multi_tool_agent
+
+import anyio
 
 router = APIRouter(tags=["Tools"])
 
+# -----------------------------------------------------------
+# Helper: call_tool
+# -----------------------------------------------------------
 async def call_tool(tool, **kwargs):
     """
     Asynchronously call the given tool with provided keyword arguments.
-    
+
     For tools decorated with @function_tool (which have an "on_invoke_tool" attribute),
     serialize the kwargs as JSON and await the async on_invoke_tool function.
     For plain tools with a callable 'function' attribute, call that synchronously.
@@ -23,7 +36,7 @@ async def call_tool(tool, **kwargs):
     if hasattr(tool, "function") and callable(tool.function):
         return tool.function(**kwargs)
     elif hasattr(tool, "on_invoke_tool"):
-        ctx = {}  # Empty context for invocation
+        ctx = {}
         args_json = json.dumps(kwargs)
         return await tool.on_invoke_tool(ctx, args_json)
     elif callable(tool):
@@ -31,71 +44,169 @@ async def call_tool(tool, **kwargs):
     else:
         raise ValueError("Tool is not callable")
 
-# --- Math Tools Endpoints ---
-class MathRequest(BaseModel):
-    a: float = Field(..., description="First number")
-    b: float = Field(..., description="Second number")
+# -----------------------------------------------------------
+# Existing Endpoints (Math, String, Datetime, Echo, Multi-Tool)
+# -----------------------------------------------------------
+# (Assumes you already have endpoints for /tools/add, /tools/multiply, etc.)
 
-@router.post("/add", summary="Add two numbers", description="Returns the sum of two numbers.")
-async def add_endpoint(request: MathRequest, api_key: str = Depends(verify_api_key)):
-    result = await call_tool(add, a=request.a, b=request.b)
+# -----------------------------------------------------------
+# Data Tools Endpoints
+# -----------------------------------------------------------
+class GetItemRequest(BaseModel):
+    items: List[str] = Field(..., description="List of items")
+    index: int = Field(..., description="Index of desired item")
+
+@router.post("/get_item", summary="Get an item from a list")
+async def get_item_endpoint(request: GetItemRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(get_item, items=request.items, index=request.index)
     return {"result": result}
 
-@router.post("/multiply", summary="Multiply two numbers", description="Returns the product of two numbers.")
-async def multiply_endpoint(request: MathRequest, api_key: str = Depends(verify_api_key)):
-    result = await call_tool(multiply, a=request.a, b=request.b)
+class SummarizeListRequest(BaseModel):
+    items: List[float] = Field(..., description="List of numeric values")
+
+@router.post("/summarize_list", summary="Summarize a list of numbers")
+async def summarize_list_endpoint(request: SummarizeListRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(summarize_list, items=request.items)
     return {"result": result}
 
-# --- String Tools Endpoints ---
-class ToUppercaseRequest(BaseModel):
-    text: str = Field(..., description="Text to convert to uppercase")
+class FetchMockDataRequest(BaseModel):
+    source: str = Field(..., description="Data source identifier")
 
-@router.post("/to_uppercase", summary="Convert text to uppercase", description="Converts provided text to uppercase.")
-async def to_uppercase_endpoint(request: ToUppercaseRequest, api_key: str = Depends(verify_api_key)):
-    result = await call_tool(to_uppercase, text=request.text)
+@router.post("/fetch_mock_data", summary="Fetch mock data from a source")
+async def fetch_mock_data_endpoint(request: FetchMockDataRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(fetch_mock_data, source=request.source)
     return {"result": result}
 
-class ConcatenateRequest(BaseModel):
-    text1: str = Field(..., description="First text")
-    text2: str = Field(..., description="Second text")
+# -----------------------------------------------------------
+# JSON Tools Endpoints
+# -----------------------------------------------------------
+class ValidateJsonRequest(BaseModel):
+    json_str: str = Field(..., description="JSON string to validate")
 
-@router.post("/concatenate", summary="Concatenate two texts", description="Concatenates two strings.")
-async def concatenate_endpoint(request: ConcatenateRequest, api_key: str = Depends(verify_api_key)):
-    result = await call_tool(concatenate, text1=request.text1, text2=request.text2)
+@router.post("/validate_json", summary="Validate JSON string")
+async def validate_json_endpoint(request: ValidateJsonRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(validate_json, json_str=request.json_str)
     return {"result": result}
 
-# --- Datetime Tools Endpoints ---
-class CurrentTimeResponse(BaseModel):
-    current_time: str = Field(..., description="Current UTC time in ISO format")
+class TransformJsonRequest(BaseModel):
+    json_str: str = Field(..., description="JSON string to transform")
+    transformation: str = Field(..., description="Transformation type (e.g. 'uppercase_keys')")
 
-@router.get("/current_time", summary="Get current UTC time", description="Returns current UTC time as an ISO formatted string.", response_model=CurrentTimeResponse)
-async def current_time_endpoint(api_key: str = Depends(verify_api_key)):
-    result = await call_tool(current_time)
-    return {"current_time": result}
-
-class AddDaysRequest(BaseModel):
-    base_date: str = Field(..., description="Base date in ISO format (YYYY-MM-DD or full ISO string)")
-    days: int = Field(..., description="Number of days to add")
-
-@router.post("/add_days", summary="Add days to a date", description="Adds a number of days to the provided date.")
-async def add_days_endpoint(request: AddDaysRequest, api_key: str = Depends(verify_api_key)):
-    result = await call_tool(add_days, base_date=request.base_date, days=request.days)
+@router.post("/transform_json", summary="Transform JSON data")
+async def transform_json_endpoint(request: TransformJsonRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(transform_json, json_str=request.json_str, transformation=request.transformation)
     return {"result": result}
 
-# --- Echo Tool Endpoint ---
-class EchoRequest(BaseModel):
-    message: str = Field(..., description="Message to echo")
+# -----------------------------------------------------------
+# CSV Tools Endpoints
+# -----------------------------------------------------------
+class ParseCsvRequest(BaseModel):
+    csv_str: str = Field(..., description="CSV data as a string")
 
-@router.post("/echo", summary="Echo a message", description="Echoes back the provided message.")
-async def echo_endpoint(request: EchoRequest, api_key: str = Depends(verify_api_key)):
-    result = await call_tool(echo, message=request.message)
+@router.post("/parse_csv", summary="Parse CSV data")
+async def parse_csv_endpoint(request: ParseCsvRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(parse_csv, csv_str=request.csv_str)
     return {"result": result}
 
-# --- Multi-Tool Agent Endpoint ---
-class MultiToolRequest(BaseModel):
-    input_data: str = Field(..., description="Input string for the multi-tool agent.")
+class GenerateCsvRequest(BaseModel):
+    data: List[dict] = Field(..., description="List of dict rows to convert to CSV")
 
-@router.post("/multi-tool", summary="Run multi-tool agent", description="Runs the multi-tool agent with the provided input and aggregates results.")
-async def multi_tool_endpoint(request: MultiToolRequest, api_key: str = Depends(verify_api_key)):
-    result = multi_tool_agent.run(request.input_data)
-    return result
+@router.post("/generate_csv", summary="Generate CSV data")
+async def generate_csv_endpoint(request: GenerateCsvRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(generate_csv, data=request.data)
+    return {"result": result}
+
+# -----------------------------------------------------------
+# Analysis Tools Endpoints
+# -----------------------------------------------------------
+class TextRequest(BaseModel):
+    text: str = Field(..., description="Input text")
+
+@router.post("/analyze_sentiment", summary="Analyze sentiment")
+async def analyze_sentiment_endpoint(request: TextRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(analyze_sentiment, text=request.text)
+    return {"result": result}
+
+@router.post("/extract_entities", summary="Extract entities")
+async def extract_entities_endpoint(request: TextRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(extract_entities, text=request.text)
+    return {"result": result}
+
+@router.post("/extract_keywords", summary="Extract keywords")
+async def extract_keywords_endpoint(request: TextRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(extract_keywords, text=request.text)
+    return {"result": result}
+
+class BasicStatsRequest(BaseModel):
+    data: List[float] = Field(..., description="List of numeric values")
+
+@router.post("/calculate_basic_stats", summary="Calculate basic statistics")
+async def calculate_basic_stats_endpoint(request: BasicStatsRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(calculate_basic_stats, data=request.data)
+    return {"result": result}
+
+class PerformCorrelationRequest(BaseModel):
+    x: List[float] = Field(..., description="List of x values")
+    y: List[float] = Field(..., description="List of y values")
+
+@router.post("/perform_correlation", summary="Perform correlation")
+async def perform_correlation_endpoint(request: PerformCorrelationRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(perform_correlation, x=request.x, y=request.y)
+    return {"result": result}
+
+class FindPatternsRequest(BaseModel):
+    data: List[int] = Field(..., description="List of integers to check for patterns")
+
+@router.post("/find_patterns", summary="Find patterns in data")
+async def find_patterns_endpoint(request: FindPatternsRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(find_patterns, data=request.data)
+    return {"result": result}
+
+class ApplyRegexRequest(BaseModel):
+    text: str = Field(..., description="Input text")
+    pattern: str = Field(..., description="Regex pattern")
+
+@router.post("/apply_regex", summary="Apply regex pattern to text")
+async def apply_regex_endpoint(request: ApplyRegexRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(apply_regex, text=request.text, pattern=request.pattern)
+    return {"result": result}
+
+# -----------------------------------------------------------
+# API Tools Endpoints
+# -----------------------------------------------------------
+class MakeRequestRequest(BaseModel):
+    url: str = Field(..., description="URL to request")
+    method: str = Field(..., description="HTTP method (GET, POST, etc.)")
+
+@router.post("/make_request", summary="Make an HTTP request")
+async def make_request_endpoint(request: MakeRequestRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(make_request, url=request.url, method=request.method)
+    return {"result": result}
+
+class CacheSetRequest(BaseModel):
+    key: str
+    value: Any
+    ttl: int = Field(..., description="Time to live in seconds")
+
+@router.post("/cache_set", summary="Set a value in cache")
+async def cache_set_endpoint(request: CacheSetRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(cache_set, key=request.key, value=request.value, ttl=request.ttl)
+    return {"result": result}
+
+class CacheGetRequest(BaseModel):
+    key: str
+
+@router.post("/cache_get", summary="Get a value from cache")
+async def cache_get_endpoint(request: CacheGetRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(cache_get, key=request.key)
+    return {"result": result}
+
+class CheckRateLimitRequest(BaseModel):
+    key: str
+    max_requests: int
+    window_seconds: int
+
+@router.post("/check_rate_limit", summary="Check rate limit")
+async def check_rate_limit_endpoint(request: CheckRateLimitRequest, api_key: str = Depends(verify_api_key)):
+    result = await call_tool(check_rate_limit, key=request.key, max_requests=request.max_requests, window_seconds=request.window_seconds)
+    return {"result": result}
