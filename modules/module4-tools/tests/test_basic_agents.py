@@ -1,12 +1,12 @@
+# File: root/modules/module3-basic-agents/tests/test_basic_agents.py
+
 from fastapi.testclient import TestClient
 from app.main import app
 from app.config import API_KEY
-import json
 
 client = TestClient(app)
 headers = {"X-API-KEY": API_KEY}
 
-# Basic Agents Tests
 def test_initialize_lifecycle_agent():
     response = client.post("/agents/basic/lifecycle/initialize", headers=headers)
     assert response.status_code == 200

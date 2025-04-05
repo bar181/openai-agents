@@ -15,7 +15,7 @@ from openai.types.chat import ChatCompletionToolParam
 from app.config import OPENAI_API_KEY
 
 # Default model to use if not specified
-DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_MODEL = "gpt-4o-mini"
 
 class StreamItemsAgent:
     """

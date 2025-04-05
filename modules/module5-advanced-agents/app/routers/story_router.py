@@ -7,8 +7,7 @@ from app.agents.story.baseline_story_agent import run_story_agent
 from app.agents.story.custom_story_agent import run_custom_story_agent
 from app.agents.story.advanced_story_agent import run_advanced_story_agent  # phase 3
 
-router = APIRouter(tags=["Story Agents"])
-
+router = APIRouter()
 class StoryRequest(BaseModel):
     topic: str = Field(..., description="The topic for generating a story outline.")
 
